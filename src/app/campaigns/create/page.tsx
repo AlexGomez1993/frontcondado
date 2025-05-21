@@ -14,6 +14,8 @@ const schema = z.object({
   nombre: z.string().min(1, 'El nombre es requerido'),
   descripcion: z.string().min(1, 'La descripción es requerida'),
   logo: z.string().min(1, 'El logo es requerido'),
+  reglamento: z.string().optional(),
+  banner: z.string().optional(),
 });
 
 type CampaignForm = z.infer<typeof schema>;
@@ -37,6 +39,8 @@ const CampaignCreatePage = () => {
       nombre: '',
       descripcion: '',
       logo: '',
+      reglamento: '',
+      banner: ''
     },
   });
 
@@ -124,6 +128,28 @@ const CampaignCreatePage = () => {
             {...register('descripcion')}
             error={!!errors.descripcion}
             helperText={errors.descripcion?.message}
+            size="small"
+          />
+
+          <TextField
+            label="Banner"
+            fullWidth
+            margin="normal"
+            rows={3}
+            {...register('banner')}
+            error={!!errors.banner}
+            helperText={errors.banner?.message}
+            size="small"
+          />
+
+          <TextField
+            label="Reglamento"
+            fullWidth
+            margin="normal"
+            rows={3}
+            {...register('reglamento')}
+            error={!!errors.reglamento}
+            helperText={errors.reglamento?.message}
             size="small"
           />
 

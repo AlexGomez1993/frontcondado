@@ -14,13 +14,15 @@ const schema = z.object({
   nombre: z.string().min(1, 'El nombre es requerido'),
   descripcion: z.string().min(1, 'La descripción es requerida'),
   logo: z.string().min(1, 'El logo es requerido'),
+  reglamento: z.string().optional(),
+  banner: z.string().optional(),
 });
 
 type CampaignForm = z.infer<typeof schema>;
 
 const CampaignEditPage = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
-  const { id } = params; // ID de la campaña que se pasa desde la URL
+  const { id } = params;
   const [logoPreview, setLogoPreview] = React.useState('');
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
   const [snackbarMsg, setSnackbarMsg] = React.useState('');
@@ -38,6 +40,8 @@ const CampaignEditPage = ({ params }: { params: { id: string } }) => {
       nombre: '',
       descripcion: '',
       logo: '',
+      reglamento: '',
+      banner: ''
     },
   });
   React.useEffect(() => {
@@ -50,6 +54,8 @@ const CampaignEditPage = ({ params }: { params: { id: string } }) => {
         setValue('nombre', data.nombre);
         setValue('descripcion', data.descripcion);
         setValue('logo', data.logo);
+        setValue('reglamento', data.reglamento);
+        setValue('banner', data.banner);
       } catch (err) {
         console.error('Error al obtener la campaña', err);
       }
@@ -149,6 +155,28 @@ const CampaignEditPage = ({ params }: { params: { id: string } }) => {
             {...register('descripcion')}
             error={!!errors.descripcion}
             helperText={errors.descripcion?.message}
+            size="small"
+          />
+          <TextField
+            label="Reglamento"
+            fullWidth
+            margin="normal"
+            multiline
+            rows={3}
+            {...register('reglamento')}
+            error={!!errors.reglamento}
+            helperText={errors.reglamento?.message}
+            size="small"
+          />
+          <TextField
+            label="Banner"
+            fullWidth
+            margin="normal"
+            multiline
+            rows={3}
+            {...register('banner')}
+            error={!!errors.banner}
+            helperText={errors.banner?.message}
             size="small"
           />
 
