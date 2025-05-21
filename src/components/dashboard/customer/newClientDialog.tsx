@@ -1,6 +1,6 @@
-import { Dialog, DialogTitle, DialogContent, TextField, FormControl, InputLabel, Select, MenuItem, DialogActions, Button, Grid, Box } from '@mui/material'
+import { Dialog, DialogTitle, DialogContent, TextField, FormControl, InputLabel, Select, MenuItem, DialogActions, Button, Grid, Box, Snackbar, Alert } from '@mui/material'
 import React from 'react'
-import { useEffect,useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Cliente } from '@/app/dashboard/customers/page';
 import axiosClient from '@/lib/axiosClient';
 import { z } from 'zod';
@@ -41,6 +41,9 @@ interface Ciudad {
 export const NewClientDialog = ({ openDialog, setOpenDialog, cliente, setCliente }: NewClientProps) => {
   const [provincias, setProvincias] = useState<Provincia[]>([]);
   const [ciudades, setCiudades] = useState<Ciudad[]>([]);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState('');
+  const [snackbarType, setSnackbarType] = useState<'success' | 'error' | 'warning'>('success');
   const { control, handleSubmit, reset, formState: { errors } } = useForm<Cliente>({
     resolver: zodResolver(clienteSchema),
     defaultValues: {
@@ -53,16 +56,17 @@ export const NewClientDialog = ({ openDialog, setOpenDialog, cliente, setCliente
       sexo: 1,
       telefono: '',
       celular: '',
-      provincia: '19', // Pichincha
-      ciudad: '189',   // Quito
+      provincia: '19',
+      ciudad: '189',
+      id: ''
     }
   });
   useEffect(() => {
     if (cliente) {
       reset({
         ciRuc: cliente.ciRuc || '',
-        provincia:'19',
-        ciudad:  '189',
+        provincia: '19',
+        ciudad: '189',
       });
     }
   }, [cliente, reset]);
@@ -111,15 +115,22 @@ export const NewClientDialog = ({ openDialog, setOpenDialog, cliente, setCliente
         edad: calcularEdad(data.fechaNacimiento),
       });
 
-      if (response.data) {
-        alert('Cliente guardado correctamente');
-        setCliente(data)
-        setOpenDialog(false);
-        reset(); // limpia el formulario
-      }
+      const clienteCreado = response.data.cliente;
+      setSnackbarType('success');
+      setSnackbarMsg('Cliente editado con éxito');
+      setCliente({ ...clienteCreado, ciRuc: clienteCreado.ruc, nombres: clienteCreado.nombre });
+
+      reset();
     } catch (error) {
       console.error('Error al guardar cliente:', error);
       alert('Error al conectar con el servidor');
+      setSnackbarType('error');
+      setSnackbarMsg('Error al crear el cliente');
+    } finally {
+      setSnackbarOpen(true);
+      setTimeout(() => {
+        setOpenDialog(false);
+      }, 1500);
     }
   };
 
@@ -257,7 +268,7 @@ export const NewClientDialog = ({ openDialog, setOpenDialog, cliente, setCliente
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-          <Controller
+            <Controller
               name="provincia"
               control={control}
               render={({ field }) => (
@@ -273,7 +284,7 @@ export const NewClientDialog = ({ openDialog, setOpenDialog, cliente, setCliente
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-          <Controller
+            <Controller
               name="ciudad"
               control={control}
               render={({ field }) => (
@@ -296,6 +307,17 @@ export const NewClientDialog = ({ openDialog, setOpenDialog, cliente, setCliente
           Guardar
         </Button>
       </DialogActions>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={2000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarType} sx={{ width: '100%' }}>
+          {snackbarMsg}
+        </Alert>
+      </Snackbar>
     </Dialog>
   );
 };
+

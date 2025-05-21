@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import {
+  Alert,
   Box,
   Button,
   Dialog,
@@ -15,6 +16,7 @@ import {
   MenuItem,
   Paper,
   Select,
+  Snackbar,
   Table,
   TableBody,
   TableCell,
@@ -79,10 +81,10 @@ export default function FacturaForm() {
   });
   const [selectedRows, setSelectedRows] = useState<CampaignPromotions[]>([]);
 
-  const [local, setLocal] = React.useState<string>('0');
-  const [monto, setMonto] = React.useState('');
-  const [facturaNum, setFacturaNum] = React.useState('');
-  const [openDialog, setOpenDialog] = React.useState(false);
+  const [local, setLocal] = useState<string>('0');
+  const [monto, setMonto] = useState('');
+  const [facturaNum, setFacturaNum] = useState('');
+  const [openDialog, setOpenDialog] = useState(false);
   const [locales, setLocales] = useState<Store[]>([]);
   const [campanias, setCampanias] = useState<Campaign[]>([]);
   const [formasPago, setFormasPago] = useState<PaymentMethod[]>([]);
@@ -91,7 +93,11 @@ export default function FacturaForm() {
   const [openCuponDialog, setOpenCuponDialog] = useState(false);
   const [estadoImpresion, setEstadoImpresion] = useState<'listo' | 'imprimiendo' | 'transicion' | 'finalizado'>('listo');
   const [cuentaRegresiva, setCuentaRegresiva] = useState(5);
-  const [cliente, setCliente] = React.useState<Cliente>({
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState('');
+  const [snackbarType, setSnackbarType] = useState<'success' | 'error' | 'warning'>('success');
+  const [isEditing, setIsEditing] = useState(false);
+  const [cliente, setCliente] = useState<Cliente>({
     id: '',
     nombres: '',
     apellidos: '',
@@ -105,6 +111,7 @@ export default function FacturaForm() {
     provincia: '',
     ciudad: '',
   });
+
 
   useEffect(() => {
     const fetchFormasPago = async () => {
@@ -142,9 +149,9 @@ export default function FacturaForm() {
           campania_id: campanias[0].id || 0,
           campania_nombre: campanias[0].nombre || undefined,
           campania_tipoConfig: campanias[0].configuracion?.descripcion || 0,
-          promocion_id: campanias[0].promociones![0].id || 0,
-          promocion_nombre: campanias[0].promociones![0].nombre || '',
-          promocion_montominimo: campanias[0].promociones![0].montominimo || 0,
+          promocion_id: campanias[0].promociones ? campanias[0].promociones[0].id : 0,
+          promocion_nombre: campanias[0].promociones ? campanias[0].promociones[0].nombre : '',
+          promocion_montominimo: campanias[0].promociones ? campanias[0].promociones[0].montominimo : 0,
           forma_pago: 0,
         }
       ]);
@@ -152,11 +159,15 @@ export default function FacturaForm() {
       setSelectedRows([]);
     }
   }, [campanias]);
-  // Función para manejar el clic en el botón Guardar
+
   const handleGuardar = async () => {
     try {
       if (!facturasIngreso || !facturasIngreso.campanias.length) {
         console.warn("No hay facturas para enviar.");
+        //alert('Por favor, agrege una factura');
+        setSnackbarType('warning');
+        setSnackbarMsg('Por favor, agrege una factura');
+        setSnackbarOpen(true);
         return;
       }
 
@@ -289,7 +300,7 @@ export default function FacturaForm() {
       setOpenDialog(true);
     }
   };
-  
+
   const actualizarSaldoInicial = (saldoinicial: number, index: number) => {
     const row = selectedRows[index];
     const newRows = [...selectedRows];
@@ -355,6 +366,25 @@ export default function FacturaForm() {
   };
 
   const agregarFactura = async () => {
+    if (isEditing) {
+      //alert('');
+      setSnackbarType('warning');
+      setSnackbarMsg('Por favor termine de editar los datos del cliente');
+      setSnackbarOpen(true);
+      return;
+    }
+    if (!monto || !local) {
+      setSnackbarType('warning');
+      setSnackbarMsg('Por favor revise que todos los campos estén llenos');
+      setSnackbarOpen(true);
+      return;
+    }
+    if (selectedRows.some((c) => c.forma_pago == 0)) {
+      setSnackbarType('warning');
+      setSnackbarMsg('Por favor revise seleccione una forma de pago');
+      setSnackbarOpen(true);
+      return;
+    }
     if (!selectedRows || selectedRows.length === 0) return;
     if (!cliente?.id || !cliente?.ciRuc || !user?.id) return;
 
@@ -460,7 +490,6 @@ export default function FacturaForm() {
     setLocal('0');
   };
 
-
   const eliminarFactura = (
     campaniaId: number,
     promocionId: number,
@@ -532,19 +561,19 @@ export default function FacturaForm() {
   const imprimirCupones = () => {
     const imprimirSecuencial = async (i: number) => {
       const campaniaActual = cuponesPorImprimir[indiceCampania]; // accede dinámicamente
-  
+
       if (!campaniaActual) return;
-  
+
       const start = campaniaActual.ultimoCuponImpreso + 1;
       const end = campaniaActual.ultimoCuponImprimir;
       const campaniaSelect = campanias.find((c) => c.nombre === campaniaActual.campania);
       const logo = campaniaSelect?.logo;
-  
+
       if (i > end) {
         // Fin de campaña actual
         setEstadoImpresion('transicion');
         setCuentaRegresiva(5);
-  
+
         const countdown = setInterval(() => {
           setCuentaRegresiva((prev) => {
             if (prev === 1) {
@@ -559,13 +588,13 @@ export default function FacturaForm() {
             return prev - 1;
           });
         }, 1000);
-  
+
         return;
       }
-  
+
       const win = window.open('');
       if (!win) return;
-  
+
       win.document.write(`<!DOCTYPE html>
         <html>
           <head>
@@ -612,9 +641,9 @@ export default function FacturaForm() {
             </table>
           </body>
         </html>`);
-  
+
       win.document.close();
-  
+
       win.onload = () => {
         win.focus();
         setTimeout(() => {
@@ -624,28 +653,70 @@ export default function FacturaForm() {
         }, 100);
       };
     };
-  
+
     const currentStart = cuponesPorImprimir[indiceCampania]?.ultimoCuponImpreso + 1 || 1;
     imprimirSecuencial(currentStart);
   };
-  
+
+  const handleGuardarDatosCliente = async () => {
+    try {
+      await axiosClient.put(`/api/clientes/${cliente.id}`, {
+        nombres: cliente.nombres,
+        apellidos: cliente.apellidos,
+        email: cliente.email,
+        direccion: cliente.direccion,
+        celular: cliente.celular
+      });
+
+      setSnackbarType('success');
+      setSnackbarMsg('Cliente editado con éxito');
+      setIsEditing(false);
+    } catch (err) {
+      console.error(err);
+      setSnackbarType('error');
+      setSnackbarMsg('Error al editar el cliente');
+    } finally {
+      setSnackbarOpen(true);
+    }
+  };
+
+  const handleEnableEdit = () => {
+    if (cliente.id) { setIsEditing(true) }
+    else {
+      setSnackbarType('warning');
+      setSnackbarMsg('Primero debe ingresar el número de identidad de un cliente.');
+      setSnackbarOpen(true);
+    }
+  }
   return (
     <Box sx={{ p: 3 }}>
-      <Typography
-        variant="h5"
-        sx={{
-          fontWeight: 'bold',
-          color: '#1976d2',
-          display: 'flex',
-          alignItems: 'center',
-          textTransform: 'uppercase',
-          letterSpacing: 1.5,
-          textShadow: '2px 2px 5px rgba(0, 0, 0, 0.2)',
-        }}
-      >
-        <TipJar style={{ marginRight: 8 }} />
-        Nueva Factura
-      </Typography>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Typography
+          variant="h5"
+          sx={{
+            fontWeight: 'bold',
+            color: '#1976d2',
+            display: 'flex',
+            alignItems: 'center',
+            textTransform: 'uppercase',
+            letterSpacing: 1.5,
+            textShadow: '2px 2px 5px rgba(0, 0, 0, 0.2)',
+          }}
+        >
+          <TipJar style={{ marginRight: 8 }} />
+          Nueva Factura
+        </Typography>
+
+        {!isEditing ? (
+          <Button variant="outlined" color="primary" onClick={handleEnableEdit}>
+            Editar datos del cliente
+          </Button>
+        ) : (
+          <Button variant="contained" color="success" onClick={handleGuardarDatosCliente}>
+            Guardar datos
+          </Button>
+        )}
+      </Box>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
           <TextField fullWidth label="R.U.C." variant="outlined" onChange={handleRucChange} size='small' />
@@ -660,7 +731,7 @@ export default function FacturaForm() {
             value={cliente.nombres}
             onChange={(e) => setCliente({ ...cliente, nombres: e.target.value })}
             size='small'
-            disabled
+            disabled={!isEditing}
           />
         </Grid>
 
@@ -672,11 +743,11 @@ export default function FacturaForm() {
             value={cliente.apellidos}
             onChange={(e) => setCliente({ ...cliente, apellidos: e.target.value })}
             size='small'
-            disabled
+            disabled={!isEditing}
           />
         </Grid>
 
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={4}>
           <TextField
             fullWidth
             label="Correo"
@@ -685,11 +756,23 @@ export default function FacturaForm() {
             value={cliente.email}
             onChange={(e) => setCliente({ ...cliente, email: e.target.value })}
             size='small'
-            disabled
+            disabled={!isEditing}
           />
         </Grid>
 
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={4}>
+          <TextField
+            fullWidth
+            label="Celular"
+            variant="outlined"
+            value={cliente.celular}
+            onChange={(e) => setCliente({ ...cliente, celular: e.target.value })}
+            size='small'
+            disabled={!isEditing}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={4}>
           <TextField
             fullWidth
             label="Dirección"
@@ -697,7 +780,7 @@ export default function FacturaForm() {
             value={cliente.direccion}
             onChange={(e) => setCliente({ ...cliente, direccion: e.target.value })}
             size='small'
-            disabled
+            disabled={!isEditing}
           />
         </Grid>
         {selectedRows.map((row: CampaignPromotions, index: number) => {
@@ -944,10 +1027,17 @@ export default function FacturaForm() {
         </Table>
       </TableContainer>
       <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
-        <Button variant="contained" sx={{ mr: 1 }}>
+        <Button
+          variant="contained"
+          sx={{ mr: 1 }}
+          onClick={() => { window.location.reload(); }}>
           Cancelar
         </Button>
-        <Button variant="contained" color="primary" sx={{ mr: 1 }}>
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{ mr: 1 }}
+          onClick={() => { window.location.reload(); }}>
           Nuevo
         </Button>
         <Button variant="contained" color="success" onClick={handleGuardar}>
@@ -998,6 +1088,16 @@ export default function FacturaForm() {
           )}
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={2000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarType} sx={{ width: '100%' }}>
+          {snackbarMsg}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
