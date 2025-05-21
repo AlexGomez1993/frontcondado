@@ -209,70 +209,7 @@ const FacturasTable = () => {
   const handleFormaPagoChange = (event: SelectChangeEvent<number>) => {
     setFormaPagoId(Number(event.target.value));
   };
-  // Función para dividir el array de cupones en pares
-  const chunkArray = (arr: any[], size: number) =>
-    Array.from({ length: Math.ceil(arr.length / size) }, (_, i) => arr.slice(i * size, i * size + size));
 
-  const handleImprimirCupon = (cuponData: any[]) => {
-    const printWindow = window.open('', '_blank');
-    if (printWindow) {
-      printWindow.document.write(`
-        <html>
-          <head>
-            <title>Cupones</title>
-            <style>
-              @media print {
-                /* Estilos existentes... */
-            </style>
-          </head>
-          <body>
-            ${chunkArray(cuponData, 2)
-          .map(
-            (pair) => `
-              <div class="page-container">
-                <div class="cut-guide cut-guide-top"></div>
-                <div class="cut-guide cut-guide-bottom"></div>
-                ${pair
-                .map(
-                  (data) => `
-                  <div class="coupon">
-                    <img src="${data.logo}" class="logo" alt="Logo">
-                    <h2>SCALA SHOPPING</h2>
-                    
-                    <p><strong>N° CUPÓN:</strong> ${data.numCupon}</p>
-                    <p><strong>FECHA:</strong> ${data.hoy}</p>
-                    <p><strong>CLIENTE:</strong> ${data.cliente.nombre} ${data.cliente.apellidos}</p>
-                    <p><strong>CI/RUC:</strong> ${data.cliente.ruc}</p>
-                    <p><strong>TELÉFONO:</strong> ${data.cliente.telefono}</p>
-                    <p><strong>CELULAR:</strong> ${data.cliente.celular}</p>
-                    <p><strong>DIRECCIÓN:</strong> ${data.cliente.direccion}</p>
-                    <p><strong>CAMPAÑA:</strong> ${data.campania}</p>
-                    <p><strong>CUPONES:</strong> ${data.cupones}</p>
-                    
-                    <div class="nota">
-                      ${data.nota}
-                    </div>
-                  </div>
-                `
-                )
-                .join('')}
-              </div>
-            `
-          )
-          .join('')}
-          </body>
-        </html>
-      `);
-
-      printWindow.document.close();
-      printWindow.onload = () => {
-        setTimeout(() => {
-          printWindow.print();
-          printWindow.onafterprint = () => printWindow.close();
-        }, 500);
-      };
-    }
-  };
   const handleAgregarFactura = () => {
     if (!saldo || !facturaSeleccionada || !selectedPromocion || !selectedCampania) return;
     const factor = facturaSeleccionada.formapago.factor;
@@ -432,7 +369,7 @@ const FacturasTable = () => {
               body { font-family: Arial, sans-serif; font-size: 7pt; }
               table { border-collapse: collapse; width: 100%; border: 2px dotted black; padding: 2px; }
               td { padding: 2px 4px; vertical-align: top; }
-              .titulo-scala { font-size: 10pt; font-weight: bold; text-align: center; margin: 0; }
+              .titulo-condado { font-size: 10pt; font-weight: bold; text-align: center; margin: 0; }
               .texto-justificado { display: block; text-align: justify; }
             </style>
           </head>
@@ -446,7 +383,7 @@ const FacturasTable = () => {
                   <img src="${process.env.NEXT_PUBLIC_API_URL! + logo}" style="width:125px; height:75px" />
                 </td>
               </tr>
-              <tr><td colspan="2"><p class="titulo-scala">SCALA SHOPPING</p></td></tr>
+              <tr><td colspan="2"><p class="titulo-condado">CONDADO SHOPPING</p></td></tr>
               <tr><td><strong>NÚMERO DE CUPON:</strong></td><td>${i}</td></tr>
               <tr><td><strong>FECHA Y HORA:</strong></td><td>${new Date().toLocaleString()}</td></tr>
               <tr><td><strong>CLIENTE:</strong></td><td>${facturaSeleccionada.cliente?.nombres} ${facturaSeleccionada.cliente?.apellidos}</td></tr>

@@ -603,7 +603,7 @@ export default function FacturaForm() {
               body { font-family: Arial, sans-serif; font-size: 7pt; }
               table { border-collapse: collapse; width: 100%; border: 2px dotted black; padding: 2px; }
               td { padding: 2px 4px; vertical-align: top; }
-              .titulo-scala { font-size: 10pt; font-weight: bold; text-align: center; margin: 0; }
+              .titulo-condado { font-size: 10pt; font-weight: bold; text-align: center; margin: 0; }
               .texto-justificado { display: block; text-align: justify; }
             </style>
           </head>
@@ -617,7 +617,7 @@ export default function FacturaForm() {
                   <img src="${process.env.NEXT_PUBLIC_API_URL! + logo}" style="width:125px; height:75px" />
                 </td>
               </tr>
-              <tr><td colspan="2"><p class="titulo-scala">SCALA SHOPPING</p></td></tr>
+              <tr><td colspan="2"><p class="titulo-condado">CONDADO SHOPPING</p></td></tr>
               <tr><td><strong>NÚMERO DE CUPON:</strong></td><td>${i}</td></tr>
               <tr><td><strong>FECHA Y HORA:</strong></td><td>${new Date().toLocaleString()}</td></tr>
               <tr><td><strong>CLIENTE:</strong></td><td>${cliente?.nombres} ${cliente?.apellidos}</td></tr>

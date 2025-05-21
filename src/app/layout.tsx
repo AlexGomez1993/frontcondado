@@ -13,7 +13,7 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 export const metadata = {
-  title: 'Sistema de Canjes SCALA',
+  title: 'Sistema de Canjes CONDADO',
 };
 export default function Layout({ children }: LayoutProps): React.JSX.Element {
   return (
