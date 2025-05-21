@@ -116,6 +116,7 @@ const CreateVariablePage = () => {
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
+    router.push('/dashboard/settings');
   };
 
   return (
