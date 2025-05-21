@@ -23,6 +23,7 @@ export const navItemsUserTI = [
 
 export const navItemsClient = [
   { key: 'home', title: 'Inicio', href: paths.dashboard.home_client, icon: 'home-client' },
+  { key: 'integrations', title: 'Reglamentos', href: paths.dashboard.integrations, icon: 'reglament' },
   { key: 'customeronline', title: 'Facturas Online', href: paths.dashboard.customeronline, icon: 'file-text' },
   { key: 'account', title: 'Cuenta', href: paths.dashboard.account, icon: 'user' },
 ] satisfies NavItemConfig[];

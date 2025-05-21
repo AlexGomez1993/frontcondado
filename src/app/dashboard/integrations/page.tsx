@@ -1,66 +1,74 @@
-
 "use client";
 import * as React from "react";
-import { useState, useMemo, useCallback } from "react";
-import { Document, Page as PdfPage, pdfjs } from "react-pdf"; // Importa pdfjs desde react-pdf
+import { useState, useEffect, useMemo, useRef } from "react";
+import { Document, Page as PdfPage, pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import Slider from "react-slick";
-import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
-import Card from "@mui/material/Card";
-import { Plus as PlusIcon } from "@phosphor-icons/react/dist/ssr/Plus";
-import { CompaniesFilters } from "@/components/dashboard/integrations/integrations-filters";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import {
+  Box,
+  Card,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { BookOpenText } from "@phosphor-icons/react/dist/ssr";
-import { useUser } from "@/hooks/use-user";
 import NewsCarousel from "@/components/dashboard/integrations/news-carrusel";
-import { Box, Grid } from "@mui/material";
+import { CompaniesFilters } from "@/components/dashboard/integrations/integrations-filters";
+import axiosClient from "@/lib/axiosClient";
+import { useUser } from "@/hooks/use-user";
 
-// Configura el worker usando la versión de react-pdf
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 export default function ReglamentoPage(): React.JSX.Element {
   const { user } = useUser();
-  const [pdfData, setPdfData] = useState<Uint8Array | null>(() => {
-    if (typeof window !== 'undefined') {
-      const savedPdf = localStorage.getItem('reglamento');
-      return savedPdf ? new Uint8Array(JSON.parse(savedPdf)) : null;
-    }
-    return null;
-  });
+  const [campanias, setCampanias] = useState<any[]>([]);
+  const [campaniaSeleccionada, setCampaniaSeleccionada] = useState<any | null>(null);
   const [numPages, setNumPages] = useState<number>(0);
-  const [error, setError] = useState<string | null>(null);
+  const [containerWidth, setContainerWidth] = useState<number>(600); // default width
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const handleFileUpload = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    if (file.type !== "application/pdf") {
-      setError("El archivo seleccionado no es un PDF.");
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (reader.result) {
-        const uintArray = new Uint8Array(reader.result as ArrayBuffer);
-        setPdfData(uintArray);
-        localStorage.setItem('reglamento', JSON.stringify(Array.from(uintArray)));
-        setNumPages(0);
-        setError(null);
+  useEffect(() => {
+    const fetchCampanias = async () => {
+      try {
+        const response = await axiosClient.get(`/api/campanias?activo=1`);
+        const data = response.data.data || [];
+        setCampanias(data);
+        if (data.length === 1) {
+          setCampaniaSeleccionada(data[0]);
+        }
+      } catch (error) {
+        console.error("Error al cargar campañas:", error);
       }
     };
-    reader.onerror = () => {
-      setError("Error al cargar el archivo PDF.");
-      console.error(reader.error);
-    };
-    reader.readAsArrayBuffer(file);
+
+    fetchCampanias();
   }, []);
 
-  const memoizedPdfFile = useMemo(() => (pdfData ? { data: pdfData } : null), [pdfData]);
+  // Detecta el ancho del contenedor en tiempo real
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.contentRect) {
+          setContainerWidth(entry.contentRect.width);
+        }
+      }
+    });
+
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
+
+    return () => {
+      if (containerRef.current) {
+        resizeObserver.unobserve(containerRef.current);
+      }
+    };
+  }, []);
 
   const sliderSettings = {
     dots: true,
@@ -73,6 +81,12 @@ export default function ReglamentoPage(): React.JSX.Element {
     autoplaySpeed: 2000,
   };
 
+  const memoizedPdfUrl = useMemo(() => {
+    return campaniaSeleccionada?.reglamento
+      ? `/reglamentos/${campaniaSeleccionada.reglamento}`
+      : null;
+  }, [campaniaSeleccionada]);
+
   return (
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
@@ -80,83 +94,113 @@ export default function ReglamentoPage(): React.JSX.Element {
           <Typography
             variant="h5"
             sx={{
-              fontWeight: 'bold',
-              color: '#1976d2',
-              display: 'flex',
-              alignItems: 'center',
-              textTransform: 'uppercase',
+              fontWeight: "bold",
+              color: "#1976d2",
+              display: "flex",
+              alignItems: "center",
+              textTransform: "uppercase",
               letterSpacing: 1.5,
-              textShadow: '2px 2px 5px rgba(0, 0, 0, 0.2)',
+              textShadow: "2px 2px 5px rgba(0, 0, 0, 0.2)",
             }}
           >
             <BookOpenText style={{ marginRight: 8 }} />
             Reglamento
           </Typography>
         </Stack>
-        {user?.rol_id === 1 && (
-          <div>
-            <Button
-              component="label"
-              startIcon={<PlusIcon fontSize="var(--icon-fontSize-md)" />}
-              variant="contained"
-            >
-              Cargar Reglamento
-              <input
-                type="file"
-                accept="application/pdf"
-                hidden
-                onChange={handleFileUpload}
-                aria-label="Cargar archivo PDF"
-              />
-            </Button>
-          </div>
-        )}
       </Stack>
-      <CompaniesFilters />
-      {error && (
-        <Typography color="error" sx={{ textAlign: "center" }}>
-          {error}
-        </Typography>
+
+      {campanias.length > 1 && (
+        <FormControl fullWidth>
+          <InputLabel id="campania-label">Campaña</InputLabel>
+          <Select
+            labelId="campania-label"
+            value={campaniaSeleccionada?.id || ""}
+            onChange={(e) => {
+              const seleccionada = campanias.find((c) => c.id === e.target.value);
+              setCampaniaSeleccionada(seleccionada || null);
+              setNumPages(0);
+            }}
+            label="Campaña"
+          >
+            {campanias.map((campania) => (
+              <MenuItem key={campania.id} value={campania.id}>
+                {campania.nombre}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       )}
 
-      <Grid container spacing={10}>
-        {memoizedPdfFile && (
-          <Grid item xs={12} md={6.5}>
+      <CompaniesFilters />
+
+      <Grid container spacing={10} alignItems="stretch">
+        <Grid
+          item
+          xs={12}
+          md={user?.rol_id === 1 || user?.rol_id === 3 ? 6.5 : 12}
+          sx={{ display: "flex", justifyContent: "center" }}
+        >
+          <Card
+            ref={containerRef}
+            sx={{
+              p: 2,
+              width: "100%",
+              maxWidth: 800,
+              textAlign: "center",
+              height: "100%",
+              minHeight: 400,
+              overflowY: "auto",
+            }}
+          >
+            {campanias.length === 0 ? (
+              <Typography variant="h6" color="text.secondary">
+                No hay campañas activas disponibles.
+              </Typography>
+            ) : !campaniaSeleccionada ? (
+              <Typography color="text.secondary">
+                Selecciona una campaña para ver su reglamento.
+              </Typography>
+            ) : !memoizedPdfUrl ? (
+              <Typography color="text.secondary">
+                Esta campaña no tiene reglamento asignado.
+              </Typography>
+            ) : (
+              <>
+                <Document
+                  file={memoizedPdfUrl}
+                  onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+                  onLoadError={(err) => console.error("Error cargando PDF:", err)}
+                >
+                  {numPages > 0 ? (
+                    <Slider {...sliderSettings}>
+                      {Array.from({ length: numPages }, (_, index) => (
+                        <Box key={index} sx={{ px: 2 }}>
+                          <PdfPage
+                            pageNumber={index + 1}
+                            width={Math.min(containerWidth - 40, 760)} // responsive, con margen
+                            renderAnnotationLayer={false}
+                            renderTextLayer={false}
+                          />
+                        </Box>
+                      ))}
+                    </Slider>
+                  ) : (
+                    <Typography>Cargando páginas...</Typography>
+                  )}
+                </Document>
+              </>
+            )}
+          </Card>
+        </Grid>
+
+        {(user?.rol_id === 1 || user?.rol_id === 3) && (
+          <Grid item xs={12} md={4} sx={{ height: "100%" }}>
             <Card sx={{ p: 2, textAlign: "center", height: "100%" }}>
-              <Document
-                file={memoizedPdfFile}
-                onLoadSuccess={({ numPages }: { numPages: number }) => setNumPages(numPages)}
-              >
-                {numPages > 0 ? (
-                  <Slider {...sliderSettings}>
-                    {Array.from({ length: numPages }, (_, index) => (
-                      <div key={index} style={{ padding: "0 10px" }}>
-                        <PdfPage
-                          pageNumber={index + 1}
-                          width={600}
-                          renderAnnotationLayer={false}
-                          renderTextLayer={false}
-                        />
-                      </div>
-                    ))}
-                  </Slider>
-                ) : (
-                  <Typography>Cargando páginas...</Typography>
-                )}
-              </Document>
+              <NewsCarousel vertical={true} />
             </Card>
           </Grid>
         )}
-
-        <Grid item xs={12} md={4} sx={{ height: "100%" }}>
-          <Card sx={{ p: 2, textAlign: "center", height: "100%" }}>
-          <NewsCarousel vertical={true} />
-          </Card>
-          
-        </Grid>
       </Grid>
-
-
     </Stack>
   );
 }
