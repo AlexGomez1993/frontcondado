@@ -110,191 +110,223 @@ export function SignInFormClient(): React.JSX.Element {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
+        position: 'fixed',
+        top: 0,
+        left: 0,
         width: '100vw',
+        height: '100vh',
         backgroundImage: 'url(/assets/fondo-condado.jpg)',
         backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        p: 5,
-        position: 'fixed',
-        top: 0,
-        left: 0,
+        p: 2,
       }}
     >
-      <Stack
-        spacing={3}
+      <Box
         sx={{
-          background: 'linear-gradient(145deg, rgba(51,0,27,0.9) 0%, rgba(74,0,31,0.7) 100%)',
-          borderRadius: 2,
-          p: 4,
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-          maxWidth: 450,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
           width: '100%',
-          mx: 'auto',
-          color: 'white',
-          backdropFilter: 'blur(4px)',
-          border: '1px solid rgba(255,255,255,0.1)',
-        }}
-      >
-        <Typography
-          variant="h4"
+          maxWidth: 800,
+          position: 'relative',
+        }}>
+        <Stack
+          spacing={3}
           sx={{
-            fontWeight: 800,
-            color: 'common.white',
-            textAlign: 'center',
-            textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+            background: 'linear-gradient(180deg, rgba(242, 242, 242, 0.95) 10%, rgba(118, 40, 125, 09) 150%)',
+            borderRadius: 2,
+            p: 4,
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+            maxWidth: 450,
+            width: '100%',
+            mx: 'auto',
+            color: 'white',
+            backdropFilter: 'blur(4px)',
+            border: '1px solid rgba(255,255,255,0.1)',
           }}
         >
-          Iniciar Sesión
-        </Typography>
-        <Divider sx={{ borderColor: 'rgba(255,255,255,0.2)' }} />
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Stack spacing={2}>
-            <Controller
-              control={control}
-              name="ruc"
-              render={({ field }) => (
-                <FormControl error={Boolean(errors.ruc)}>
-                  <InputLabel sx={{
-                    color: 'white',
-                    '&.Mui-focused': {
-                      color: 'white',
-                    },
-                  }}>C.I. / Pasaporte</InputLabel>
-                  <OutlinedInput
-                    {...field}
-                    label="C.I./ Pasaporte"
-                    sx={{
-                      color: 'white',
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'white',
-                      },
-                      '&:hover .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'white',
-                      },
-                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'white',
-                      },
-                    }}
-                  />
-                  <Typography variant="caption" sx={{ color: 'white)' }}>
-                    * Recuerda si tienes pasaporte anteponer la letra P *
-                  </Typography>
-                  {errors.ruc && (
-                    <Typography variant="caption" color="error">
-                      {errors.ruc.message}
-                    </Typography>
-                  )}
-                </FormControl>
-              )}
-            />
-            {!validado && (
-              <Button sx={{
-                background: 'rgba(51,0,27,0.85)',
-                color: 'white',
-                '&:hover': {
-                  background: 'rgba(51,0,27,1)',
-                  boxShadow: '0 4px 15px rgba(51,0,27,0.4)'
-                },
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-              }} variant="outlined" onClick={handleValidarRuc} disabled={isPending}>
-                {isPending ? <CircularProgress size={20} /> : 'Siguiente'}
-              </Button>
-            )}
-
-            {(clienteState?.estado === 1 || clienteState?.estado === 3) && (
+          <Box
+            component="img"
+            src="/assets/logocondado.png"
+            alt="Logo"
+            sx={{
+              width: 210,
+              mx: 'auto',
+              height: 60,
+              borderRadius: 2,
+              transform: 'translateY(15px)', // Ajuste fino de alineación vertical
+              flexShrink: 0,
+              '@media (max-width: 400px)': {
+                transform: 'translateY(0)',
+                marginBottom: 2,
+                width: 100,
+                height: 140,
+              },
+            }}
+          />
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 800,
+              color: 'common.white',
+              textAlign: 'center',
+              textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+            }}
+          >
+            Iniciar Sesión
+          </Typography>
+          <Divider sx={{ borderColor: 'rgba(255,255,255,0.2)' }} />
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Stack spacing={2}>
               <Controller
                 control={control}
-                name="password"
+                name="ruc"
                 render={({ field }) => (
-                  <FormControl error={Boolean(errors.password)}>
+                  <FormControl error={Boolean(errors.ruc)}>
                     <InputLabel sx={{
-                    color: 'white',
-                    '&.Mui-focused': {
                       color: 'white',
-                    },
-                  }}>Contraseña</InputLabel>
+                      '&.Mui-focused': {
+                        color: 'rgba(118,40,125)',
+                      },
+                    }}>C.I. / Pasaporte</InputLabel>
                     <OutlinedInput
                       {...field}
-                      type={showPassword ? 'text' : 'password'}
-                      endAdornment={
-                        showPassword ? (
-                          <Eye onClick={() => setShowPassword(false)} />
-                        ) : (
-                          <EyeSlash onClick={() => setShowPassword(true)} />
-                        )
-                      }
+                      label="C.I./ Pasaporte"
                       sx={{
                         color: 'white',
                         '& .MuiOutlinedInput-notchedOutline': {
-                          borderColor: 'white',
+                          borderColor: 'rgba(118,40,125)',
                         },
                         '&:hover .MuiOutlinedInput-notchedOutline': {
-                          borderColor: 'white',
+                          borderColor: 'rgba(118,40,125)',
                         },
                         '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                          borderColor: 'white',
+                          borderColor: 'rgba(118,40,125)',
                         },
                       }}
                     />
-                    {errors.password && (
+                    <Typography variant="caption" sx={{ color: 'white' }}>
+                      * Recuerda si tienes pasaporte anteponer la letra P *
+                    </Typography>
+                    {errors.ruc && (
                       <Typography variant="caption" color="error">
-                        {errors.password.message}
+                        {errors.ruc.message}
                       </Typography>
                     )}
                   </FormControl>
                 )}
               />
-            )}
-
-            {errors.root && <Alert severity="error">{errors.root.message}</Alert>}
-
-            {(clienteState?.estado === 1 || clienteState?.estado === 3) && (
-              <>
-                <div>
-                  <Link component={RouterLink} href={paths.auth.resetPassword} variant="subtitle2" sx={{ color: 'rgba(255,255,255,0.7)' }}>
-                    Olvidaste tu Contraseña?
-                  </Link>
-                </div>
+              {!validado && (
                 <Button
                   sx={{
-                    background: 'rgba(51,0,27,0.85)',
-                    color: 'white',
+                    color: 'rgb(118,40,125)',
+                    backgroundColor: 'white',
+                    fontWeight: 'bold',
                     '&:hover': {
-                      background: 'rgba(51,0,27,1)',
-                      boxShadow: '0 4px 15px rgba(51,0,27,0.4)',
+                      backgroundColor: '#f5f5f5',
                     },
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   }}
-                  type="submit"
-                  variant="contained"
-                  disabled={isPending}
-                >
-                  {isPending ? <CircularProgress size={20} /> : 'Ingresar'}
+                  variant="outlined"
+                  onClick={handleValidarRuc}
+                  disabled={isPending}>
+                  {isPending ? <CircularProgress size={20} /> : 'Siguiente'}
                 </Button>
-              </>
-            )}
-            {clienteState?.estado === 1 && (
-              <Alert severity="info">
-                Usted fue registrado en la isla de atención al cliente del centro comercial. Su clave es su número de
-                identificación. Recomendamos cambiarla en el módulo Perfil → Cambiar contraseña.
-              </Alert>
-            )}
-          </Stack>
-        </form>
+              )}
 
-        <NewClientForm
-          open={openDialog}
-          onClose={() => setOpenDialog(false)}
-          ciRuc={rucValue}
-          setClienteState={setClienteState}
-          onSubmitAfterCreate={onSubmit}
-        />
-      </Stack>
+              {(clienteState?.estado === 1 || clienteState?.estado === 3) && (
+                <Controller
+                  control={control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormControl error={Boolean(errors.password)}>
+                      <InputLabel sx={{
+                        color: 'white',
+                        '&.Mui-focused': {
+                          color: 'rgba(118,40,125)',
+                        },
+                      }}>Contraseña</InputLabel>
+                      <OutlinedInput
+                        {...field}
+                        type={showPassword ? 'text' : 'password'}
+                        endAdornment={
+                          showPassword ? (
+                            <Eye onClick={() => setShowPassword(false)} />
+                          ) : (
+                            <EyeSlash onClick={() => setShowPassword(true)} />
+                          )
+                        }
+                        sx={{
+                          color: 'white',
+                          '& .MuiOutlinedInput-notchedOutline': {
+                            borderColor: 'rgba(118,40,125)',
+                          },
+                          '&:hover .MuiOutlinedInput-notchedOutline': {
+                            borderColor: 'rgba(118,40,125)',
+                          },
+                          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                            borderColor: 'rgba(118,40,125)',
+                          },
+                        }}
+                      />
+                      {errors.password && (
+                        <Typography variant="caption" color="error">
+                          {errors.password.message}
+                        </Typography>
+                      )}
+                    </FormControl>
+                  )}
+                />
+              )}
+
+              {errors.root && <Alert severity="error">{errors.root.message}</Alert>}
+
+              {(clienteState?.estado === 1 || clienteState?.estado === 3) && (
+                <>
+                  <div>
+                    <Link component={RouterLink} href={paths.auth.resetPassword} variant="subtitle2" sx={{ color: 'white' }}>
+                      Olvidaste tu Contraseña?
+                    </Link>
+                  </div>
+                  <Button
+                    sx={{
+                      color: 'rgb(118,40,125)',
+                      backgroundColor: 'white',
+                      fontWeight: 'bold',
+                      '&:hover': {
+                        backgroundColor: '#f5f5f5',
+                      },
+                    }}
+                    type="submit"
+                    variant="contained"
+                    disabled={isPending}
+                  >
+                    {isPending ? <CircularProgress size={20} /> : 'Ingresar'}
+                  </Button>
+                </>
+              )}
+              {clienteState?.estado === 1 && (
+                <Alert severity="info">
+                  Usted fue registrado en la isla de atención al cliente del centro comercial. Su clave es su número de
+                  identificación. Recomendamos cambiarla en el módulo Perfil → Cambiar contraseña.
+                </Alert>
+              )}
+            </Stack>
+          </form>
+
+          <NewClientForm
+            open={openDialog}
+            onClose={() => setOpenDialog(false)}
+            ciRuc={rucValue}
+            setClienteState={setClienteState}
+            onSubmitAfterCreate={onSubmit}
+          />
+        </Stack>
+      </Box>
+
     </Box>
   );
 }

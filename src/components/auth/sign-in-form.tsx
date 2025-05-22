@@ -69,54 +69,35 @@ export function SignInForm(): React.JSX.Element {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
+        position: 'fixed',
+        top: 0,
+        left: 0,
         width: '100vw',
+        height: '100vh',
         backgroundImage: 'url(/assets/fondo-condado.jpg)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        p: 0.5,
-        position: 'fixed',
-        top: 0,
-        left: 0,
+        p: 2,
       }}
     >
       <Box
         sx={{
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
-          gap: 1,
-          maxWidth: 800,
+          justifyContent: 'center',
           width: '100%',
+          maxWidth: 800,
           position: 'relative',
         }}
       >
-        <Box
-          component="img"
-          src="/assets/logonuevocondado.jpg"
-          alt="Logo"
-          sx={{
-            width: 210,
-            background: 'linear-gradient(155deg, rgba(236, 228, 240, 0.9) 0%, rgba(247, 235, 255, 0.7) 100%)',
-            height: 80,
-            borderRadius: 2,
-            boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
-            transform: 'translateY(15px)', // Ajuste fino de alineación vertical
-            flexShrink: 0,
-            '@media (max-width: 400px)': {
-              transform: 'translateY(0)',
-              marginBottom: 2,
-              width: 100,
-              height: 140,
-            },
-          }}
-        />
         <Stack
           spacing={3}
           sx={{
-            background: 'linear-gradient(155deg, rgba(84, 56, 96, 0.9) 0%, rgba(144, 90, 180, 0.7) 100%)',
+            background: 'linear-gradient(180deg, rgba(242, 242, 242, 0.95) 10%, rgba(118, 40, 125, 0.9) 150%)',
             borderRadius: 3,
             p: 4,
             boxShadow: '0 12px 40px rgba(0, 0, 0, 0.4)',
@@ -127,6 +108,25 @@ export function SignInForm(): React.JSX.Element {
             border: '1px solid rgba(255,255,255,0.15)',
           }}
         >
+          <Box
+            component="img"
+            src="/assets/logocondado.png"
+            alt="Logo"
+            sx={{
+              width: 210,
+              mx: 'auto',
+              height: 60,
+              borderRadius: 2,
+              transform: 'translateY(15px)', // Ajuste fino de alineación vertical
+              flexShrink: 0,
+              '@media (max-width: 400px)': {
+                transform: 'translateY(0)',
+                marginBottom: 2,
+                width: 100,
+                height: 140,
+              },
+            }}
+          />
           <Typography
             variant="h4"
             sx={{
@@ -149,9 +149,9 @@ export function SignInForm(): React.JSX.Element {
                   <FormControl error={Boolean(errors.username)}>
                     <InputLabel
                       sx={{
-                        color: 'rgba(255,255,255,0.7)',
+                        color: 'white',
                         '&.Mui-focused': {
-                          color: 'rgba(255,255,255,0.9)',
+                          color: 'rgba(118,40,125)',
                         },
                       }}
                     >
@@ -161,14 +161,13 @@ export function SignInForm(): React.JSX.Element {
                       sx={{
                         color: 'white',
                         '& .MuiOutlinedInput-notchedOutline': {
-                          borderColor: 'rgba(255,255,255,0.3)',
+                          borderColor: 'rgba(118,40,125)',
                         },
                         '&:hover .MuiOutlinedInput-notchedOutline': {
-                          borderColor: 'rgba(255,255,255,0.5)',
+                          borderColor: 'rgba(118,40,125)',
                         },
                         '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                          borderColor: 'rgba(51,0,27,0.7)',
-                          borderWidth: '2px',
+                          borderColor: 'rgba(118,40,125)',
                         },
                       }}
                       {...field}
@@ -185,9 +184,9 @@ export function SignInForm(): React.JSX.Element {
                   <FormControl error={Boolean(errors.password)}>
                     <InputLabel
                       sx={{
-                        color: 'rgba(255,255,255,0.7)',
+                        color: 'white',
                         '&.Mui-focused': {
-                          color: 'rgba(255,255,255,0.9)',
+                          color: 'rgba(118,40,125)',
                         },
                       }}
                     >
@@ -197,14 +196,13 @@ export function SignInForm(): React.JSX.Element {
                       sx={{
                         color: 'white',
                         '& .MuiOutlinedInput-notchedOutline': {
-                          borderColor: 'rgba(255,255,255,0.3)',
+                          borderColor: 'rgba(118,40,125)',
                         },
                         '&:hover .MuiOutlinedInput-notchedOutline': {
-                          borderColor: 'rgba(255,255,255,0.5)',
+                          borderColor: 'rgba(118,40,125)',
                         },
                         '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                          borderColor: 'rgba(51,0,27,0.7)',
-                          borderWidth: '2px',
+                          borderColor: 'rgba(118,40,125)',
                         },
                       }}
                       {...field}
@@ -237,13 +235,12 @@ export function SignInForm(): React.JSX.Element {
               {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}
               <Button
                 sx={{
-                  background: 'rgba(51,0,27,0.85)',
-                  color: 'white',
+                  color: 'rgb(118,40,125)',
+                  backgroundColor: 'white',
+                  fontWeight: 'bold',
                   '&:hover': {
-                    background: 'rgba(51,0,27,1)',
-                    boxShadow: '0 4px 15px rgba(51,0,27,0.4)',
+                    backgroundColor: '#f5f5f5',
                   },
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 }}
                 disabled={isPending}
                 type="submit"
