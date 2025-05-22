@@ -565,7 +565,7 @@ const FacturaDialog = ({ open, onClose, onSubmit }: FacturaDialogProps) => {
               de conformidad con lo estipulado en la Ley Orgánica de Protección de Datos Personales, éstos no serán
               transferidos a terceros. En caso de que el cliente no desee constar en la base de datos del centro
               comercial, solicitará su eliminación al correo
-              <strong> info-scala@smo.ec</strong>.”
+              <strong> info@elcondadoshopping.com</strong>.”
             </Typography>
           </Grid>
         </Grid>

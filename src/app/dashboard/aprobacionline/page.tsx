@@ -400,7 +400,7 @@ const FacturasTable = () => {
                     los mismos sean recopilados y utilizados para las campañas del Centro Comercial, tratados de conformidad con
                     la Ley Orgánica de Protección de Datos Personales. Estos no serán transferidos a terceros. Si el cliente no
                     desea constar en la base de datos del centro comercial, puede solicitar su eliminación al correo
-                    info-scala@smo.ec.”
+                    info@elcondadoshopping.com.”
                   </span>
                 </td>
               </tr>
