@@ -56,8 +56,7 @@ export function SideNav(): React.JSX.Element {
   return (
     <Box
       sx={{
-        background:
-          'linear-gradient(to bottom, rgba(255,255,255,1180) 0%, rgba(60, 40, 80, 0.85) 32%, rgba(40, 20, 60, 0.7) 100%)',
+        background:  'linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(71, 36, 107,1) 30%, rgba(78, 41, 115,1) 60%, rgba(78, 41, 115,1) 100%)',
         '--SideNav-color': 'var(--mui-palette-common-white)',
         '--NavItem-color': 'var(--mui-palette-neutral-300)',
         '--NavItem-hover-background': 'rgba(255, 255, 255, 0.04)',
@@ -108,7 +107,7 @@ export function SideNav(): React.JSX.Element {
         <Box
           sx={{
             alignItems: 'center',
-            backgroundColor: 'rgba(51,0,27,0.9)',
+            backgroundColor: 'rgba(85, 56, 97,0.9)',
             border: '1px solid var(--mui-palette-neutral-700)',
             borderRadius: '12px',
             cursor: 'pointer',
@@ -117,10 +116,10 @@ export function SideNav(): React.JSX.Element {
           }}
         >
           <Box sx={{ flex: '1 1 auto' }}>
-            <Typography color="var(--mui-palette-neutral-400)" variant="body2">
+            <Typography color="white" variant="body2" fontWeight={'bold'}>
               Usuario
             </Typography>
-            <Typography color="inherit" variant="subtitle1">
+           <Typography color="rgb(255, 255, 255)" variant="subtitle2">
               {user ? user.nombre + ' ' + user.apellidos : null}
             </Typography>
           </Box>
@@ -173,7 +172,7 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title }: N
         sx={{
           alignItems: 'center',
           borderRadius: 1,
-          color: 'var(--NavItem-color)',
+          color: 'white',
           cursor: 'pointer',
           display: 'flex',
           flex: '0 0 auto',
