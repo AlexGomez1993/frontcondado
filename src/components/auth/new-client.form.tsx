@@ -9,7 +9,9 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
   Grid,
+  InputLabel,
   MenuItem,
   Select,
   Snackbar,
@@ -152,6 +154,7 @@ export function NewClientForm({
                   label="Nombres"
                   error={!!errors.nombre}
                   helperText={errors.nombre?.message}
+                  size="small"
                 />
               )}
             />
@@ -168,13 +171,14 @@ export function NewClientForm({
                   label="Apellidos"
                   error={!!errors.apellidos}
                   helperText={errors.apellidos?.message}
+                  size="small"
                 />
               )}
             />
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <TextField fullWidth label="C.I./R.U.C." value={ciRuc} disabled />
+            <TextField fullWidth label="C.I./R.U.C." value={ciRuc} disabled size="small"/>
           </Grid>
 
           <Grid item xs={12} sm={6}>
@@ -188,6 +192,7 @@ export function NewClientForm({
                   label="E-mail"
                   error={!!errors.email}
                   helperText={errors.email?.message}
+                  size="small"
                 />
               )}
             />
@@ -204,6 +209,7 @@ export function NewClientForm({
                   label="Dirección/Sector"
                   error={!!errors.direccion}
                   helperText={errors.direccion?.message}
+                  size="small"
                 />
               )}
             />
@@ -221,6 +227,7 @@ export function NewClientForm({
                   placeholder="AAAA-MM-DD"
                   error={!!errors.fechaNacimiento}
                   helperText={errors.fechaNacimiento?.message}
+                  size="small"
                 />
               )}
             />
@@ -231,11 +238,13 @@ export function NewClientForm({
               name="genero"
               control={control}
               render={({ field }) => (
-                <Select {...field} fullWidth error={!!errors.genero}>
-                  <MenuItem value="">Seleccione...</MenuItem>
-                  <MenuItem value="Masculino">Masculino</MenuItem>
-                  <MenuItem value="Femenino">Femenino</MenuItem>
-                </Select>
+                <FormControl fullWidth size="small" error={!!errors.genero}>
+                  <InputLabel id="sexo-label">Sexo</InputLabel>
+                  <Select {...field} labelId="sexo-label" label="Sexo">
+                    <MenuItem value={1}>Masculino</MenuItem>
+                    <MenuItem value={2}>Femenino</MenuItem>
+                  </Select>
+                </FormControl>
               )}
             />
             {errors.genero && (
@@ -256,6 +265,7 @@ export function NewClientForm({
                   label="Teléfono"
                   error={!!errors.telefono}
                   helperText={errors.telefono?.message}
+                  size="small"
                 />
               )}
             />
@@ -272,6 +282,7 @@ export function NewClientForm({
                   label="Celular"
                   error={!!errors.celular}
                   helperText={errors.celular?.message}
+                  size="small"
                 />
               )}
             />
@@ -282,7 +293,7 @@ export function NewClientForm({
               name="provincia_id"
               control={control}
               render={({ field }) => (
-                <Select {...field} fullWidth>
+                <Select {...field} fullWidth size="small">
                   {provincias.map((provincia: any) => (
                     <MenuItem key={provincia.id} value={provincia.id}>
                       {provincia.nombre}
@@ -303,7 +314,7 @@ export function NewClientForm({
               name="ciudad_id"
               control={control}
               render={({ field }) => (
-                <Select {...field} fullWidth>
+                <Select {...field} fullWidth size="small">
                   {ciudades.map((ciudad: any) => (
                     <MenuItem key={ciudad.id} value={ciudad.id}>
                       {ciudad.nombre}
@@ -331,6 +342,7 @@ export function NewClientForm({
                   type="password"
                   error={!!errors.contrasena}
                   helperText={errors.contrasena?.message}
+                  size="small"
                 />
               )}
             />
@@ -339,8 +351,8 @@ export function NewClientForm({
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose}>Cancelar</Button>
-        <Button variant="contained" onClick={handleSubmit(onSubmit)}>
+        <Button onClick={onClose} size="small" variant='outlined'>Cancelar</Button>
+        <Button variant="contained" onClick={handleSubmit(onSubmit)} size="small">
           Guardar
         </Button>
       </DialogActions>
