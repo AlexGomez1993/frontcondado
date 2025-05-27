@@ -66,7 +66,7 @@ const ClientsPage = () => {
         activo: 1,
       };
 
-      if (filterType === 'name' && filterValue) params.search = filterValue;
+      if (filterType === 'name' && filterValue) params.searchClient = filterValue;
       if (filterType === 'ruc' && filterValue) params.ruc = filterValue;
 
       const response = await axiosClient.get<ClientResponse>('/api/clientes', { params });
