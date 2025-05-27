@@ -377,7 +377,7 @@ const FacturasTable = () => {
             <table>
               <tr>
                 <td style="text-align:left;">
-                  <img src="/assets/bnScala.png" style="width:50px;" />
+                  <img src="/assets/bnCondado.png" style="width:125px;" />
                 </td>
                 <td style="text-align:right;">
                   <img src="${process.env.NEXT_PUBLIC_API_URL! + logo}" style="width:125px; height:75px" />

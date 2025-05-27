@@ -154,8 +154,8 @@ const ClientsPage = () => {
               onChange={(e: SelectChangeEvent<string>) => setFilterType(e.target.value as 'name' | 'ruc')}
               label="Filtrar por"
             >
+              <MenuItem value="ruc">RUC/CI</MenuItem>
               <MenuItem value="name">Nombre</MenuItem>
-              <MenuItem value="ruc">RUC</MenuItem>
             </Select>
           </FormControl>
         </Grid>
