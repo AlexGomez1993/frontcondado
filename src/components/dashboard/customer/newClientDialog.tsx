@@ -23,7 +23,7 @@ const clienteSchema = z.object({
   fechaNacimiento: z.string().min(1, 'Requerido'),
   sexo: z.union([z.literal(1), z.literal(2)]),
   telefono: z.string().optional(),
-  celular: z.string().optional(),
+  celular: z.string().min(1, 'Requerido'),
   provincia: z.string().min(1),
   ciudad: z.string().min(1),
 });
@@ -212,6 +212,8 @@ export const NewClientDialog = ({ openDialog, setOpenDialog, cliente, setCliente
                   label="Dirección/Sector"
                   fullWidth
                   size="small"
+                  error={!!errors.direccion} 
+                  helperText={errors.direccion?.message}
                 />
               )}
             />
@@ -254,7 +256,7 @@ export const NewClientDialog = ({ openDialog, setOpenDialog, cliente, setCliente
               name="telefono"
               control={control}
               render={({ field }) => (
-                <TextField {...field} label="Teléfono" fullWidth size="small" />
+                <TextField {...field} label="Teléfono" fullWidth size="small" error={!!errors.telefono} helperText={errors.telefono?.message}/>
               )}
             />
           </Grid>
@@ -263,7 +265,7 @@ export const NewClientDialog = ({ openDialog, setOpenDialog, cliente, setCliente
               name="celular"
               control={control}
               render={({ field }) => (
-                <TextField {...field} label="Celular" fullWidth size="small" />
+                <TextField {...field} label="Celular" fullWidth size="small" error={!!errors.celular} helperText={errors.celular?.message}/>
               )}
             />
           </Grid>
