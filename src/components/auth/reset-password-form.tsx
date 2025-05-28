@@ -165,15 +165,13 @@ export function ResetPasswordForm(): React.JSX.Element {
             sx={{
               width: 210,
               mx: 'auto',
-              height: 60,
               borderRadius: 2,
               transform: 'translateY(15px)', // Ajuste fino de alineación vertical
               flexShrink: 0,
               '@media (max-width: 400px)': {
                 transform: 'translateY(0)',
                 marginBottom: 2,
-                width: 100,
-                height: 140,
+                width: 210,
               },
             }}
           />
