@@ -39,6 +39,7 @@ import { Invoice, CheckCircle, Warning } from '@phosphor-icons/react';
 import { Campaign, CampaignResponse } from '@/types/campaign';
 import { PaymentMethod, PaymentMethodResponse } from '@/types/payment_method';
 import { Store } from '@/types/comercial_store';
+import moment from 'moment';
 
 
 const floatAnimation = keyframes`
@@ -674,7 +675,7 @@ const AprobadasDialog = ({ open, onClose }: AprobadasDialogProps) => {
                 <TableBody>
                   {aprobadasData.map((factura, index) => (
                     <TableRow key={factura.id}>
-                      <TableCell>{new Date(factura.fecha_registro).toLocaleString()}</TableCell>
+                      <TableCell>{moment(factura.fecha_registro).add(5, 'hours').format('DD/MM/YYYY HH:mm:ss')}</TableCell>
                       <TableCell>{factura.campania}</TableCell>
                       <TableCell>{factura.local}</TableCell>
                       <TableCell>{factura.numero_factura}</TableCell>
@@ -834,7 +835,7 @@ const PendienteDialog = ({ open, onClose }: PendienteDialogProps) => {
                 <TableBody>
                   {pendientesData.map((factura, index) => (
                     <TableRow key={factura.id}>
-                      <TableCell>{new Date(factura.fecha_registro).toLocaleString()}</TableCell>
+                      <TableCell>{moment(factura.fecha_registro).add(5, 'hours').format('DD/MM/YYYY HH:mm:ss')}</TableCell>
                       <TableCell>{factura.campania}</TableCell>
                       <TableCell>{factura.local}</TableCell>
                       <TableCell>{factura.numero_factura}</TableCell>
@@ -992,7 +993,7 @@ const RechazadasDialog = ({ open, onClose }: RechazadasDialogProps) => {
                 <TableBody>
                   {rechazadasData.map((factura, index) => (
                     <TableRow key={factura.id}>
-                      <TableCell>{new Date(factura.fecha_registro).toLocaleString()}</TableCell>
+                      <TableCell>{moment(factura.fecha_registro).add(5, 'hours').format('DD/MM/YYYY HH:mm:ss')}</TableCell>
                       <TableCell>{factura.campania}</TableCell>
                       <TableCell>{factura.local}</TableCell>
                       <TableCell>{factura.numero_factura}</TableCell>
