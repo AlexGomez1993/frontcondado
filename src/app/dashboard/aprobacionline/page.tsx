@@ -211,7 +211,7 @@ const FacturasTable = () => {
   };
 
   const handleAgregarFactura = () => {
-    if (!saldo || !facturaSeleccionada || !selectedPromocion || !selectedCampania) return;
+    if (saldo === null || saldo === undefined || !facturaSeleccionada || !selectedPromocion || !selectedCampania) return;
     const factor = facturaSeleccionada.formapago.factor;
     const numCuponesLocal = facturaSeleccionada.tienda.numcupones;
     const montoFactura = Number(facturaSeleccionada.monto);
@@ -386,8 +386,8 @@ const FacturasTable = () => {
               <tr><td colspan="2"><p class="titulo-condado">CONDADO SHOPPING</p></td></tr>
               <tr><td><strong>NÚMERO DE CUPON:</strong></td><td>${i}</td></tr>
               <tr><td><strong>FECHA Y HORA:</strong></td><td>${new Date().toLocaleString()}</td></tr>
-              <tr><td><strong>CLIENTE:</strong></td><td>${facturaSeleccionada.cliente?.nombres} ${facturaSeleccionada.cliente?.apellidos}</td></tr>
-              <tr><td><strong>CI/RUC:</strong></td><td>${facturaSeleccionada.cliente?.ciRuc}</td></tr>
+              <tr><td><strong>CLIENTE:</strong></td><td>${facturaSeleccionada.cliente?.nombre} ${facturaSeleccionada.cliente?.apellidos}</td></tr>
+              <tr><td><strong>CI/RUC:</strong></td><td>${facturaSeleccionada.cliente?.ruc}</td></tr>
               <tr><td><strong>TELÉFONO:</strong></td><td>${facturaSeleccionada.cliente?.telefono}</td></tr>
               <tr><td><strong>CELULAR:</strong></td><td>${facturaSeleccionada.cliente?.celular}</td></tr>
               <tr><td><strong>DIRECCIÓN:</strong></td><td>${facturaSeleccionada.cliente?.direccion}</td></tr>

@@ -36,7 +36,7 @@ const newClientSchema = z.object({
   email: z.string().email('El correo electrónico no es válido').min(1, 'El correo electrónico es obligatorio'),
   direccion: z.string().min(1, 'La dirección es obligatoria'),
   fechaNacimiento: z.string().min(1, 'La fecha de nacimiento es obligatoria'),
-  genero: z.string().min(1, 'Selecciona un género'),
+  genero: z.number().min(1, 'Selecciona un género'),
   telefono: z.string().optional(),
   celular: z.string().min(1, 'El celular es obligatorio'),
   provincia_id: z.number().min(1, 'Selecciona una provincia'),
@@ -72,7 +72,7 @@ export function NewClientForm({
       email: '',
       direccion: '',
       fechaNacimiento: '',
-      genero: '',
+      genero: 0,
       telefono: '',
       celular: '',
       provincia_id: 19,
@@ -91,7 +91,7 @@ export function NewClientForm({
         ...data,
         ruc: ciRuc,
         fecha_nacimiento: data.fechaNacimiento,
-        sexo: data.genero === 'Masculino' ? 2 : 1,
+        sexo: data.genero,
         telefono: data.telefono || '0222222222',
       };
 
@@ -222,12 +222,13 @@ export function NewClientForm({
               render={({ field }) => (
                 <TextField
                   {...field}
-                  fullWidth
                   label="Fecha Nacimiento"
-                  placeholder="AAAA-MM-DD"
+                  type="date"
+                  fullWidth
+                  size="small"
+                  InputLabelProps={{ shrink: true }}
                   error={!!errors.fechaNacimiento}
                   helperText={errors.fechaNacimiento?.message}
-                  size="small"
                 />
               )}
             />
@@ -241,6 +242,7 @@ export function NewClientForm({
                 <FormControl fullWidth size="small" error={!!errors.genero}>
                   <InputLabel id="sexo-label">Sexo</InputLabel>
                   <Select {...field} labelId="sexo-label" label="Sexo">
+                    <MenuItem value={0}>Seleccione...</MenuItem>
                     <MenuItem value={1}>Masculino</MenuItem>
                     <MenuItem value={2}>Femenino</MenuItem>
                   </Select>
