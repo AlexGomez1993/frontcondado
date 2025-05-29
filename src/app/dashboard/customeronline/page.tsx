@@ -684,36 +684,70 @@ const AprobadasDialog = ({ open, onClose }: AprobadasDialogProps) => {
                       <TableCell>
                         <Avatar
                           variant="rounded"
-                          src={factura.cabecera_image}
                           alt="Cabecera"
-                          sx={{
-                            width: 120,
-                            height: 120,
-                            border: `1px solid ${theme.palette.divider}`,
-                            cursor: 'pointer',
-                          }}
                           onClick={() => {
-                            setSelectedImage(factura.cabecera_image);
-                            setOpenImageDialog(true);
+                            if (factura.cabecera_image) {
+                              setSelectedImage(factura.cabecera_image);
+                              setOpenImageDialog(true);
+                            }
                           }}
-                        />
+                          sx={{
+                            width: 100,
+                            height: 50,
+                            cursor: factura.cabecera_image ? 'pointer' : 'default',
+                            bgcolor: factura.cabecera_image ? '#e3f2fd' : '#f5f5f5',
+                            color: factura.cabecera_image ? '#1976d2' : '#9e9e9e',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            border: factura.cabecera_image ? '2px dashed #90caf9' : '1px solid #ccc',
+                            transition: 'all 0.3s ease-in-out',
+                            '&:hover': factura.cabecera_image && {
+                              bgcolor: '#bbdefb',
+                              borderColor: '#1976d2',
+                              color: '#0d47a1',
+                              boxShadow: '0 4px 12px rgba(25, 118, 210, 0.2)',
+                            },
+                          }}
+                        >
+                          {factura.cabecera_image ? 'Ver Imagen' : 'Sin imagen'}
+                        </Avatar>
                       </TableCell>
                       <TableCell>
                         <Avatar
                           variant="rounded"
-                          src={factura.voucher_image}
-                          alt="Cabecera"
-                          sx={{
-                            width: 120,
-                            height: 120,
-                            border: `1px solid ${theme.palette.divider}`,
-                            cursor: 'pointer',
-                          }}
+                          alt="Voucher"
                           onClick={() => {
-                            setSelectedImage(factura.voucher_image);
-                            setOpenImageDialog(true);
+                            if (factura.voucher_image) {
+                              setSelectedImage(factura.voucher_image);
+                              setOpenImageDialog(true);
+                            }
                           }}
-                        />
+                          sx={{
+                            width: 100,
+                            height: 50,
+                            cursor: factura.voucher_image ? 'pointer' : 'default',
+                            bgcolor: factura.voucher_image ? '#e3f2fd' : '#f5f5f5',
+                            color: factura.voucher_image ? '#1976d2' : '#9e9e9e',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            border: factura.voucher_image ? '2px dashed #90caf9' : '1px solid #ccc',
+                            transition: 'all 0.3s ease-in-out',
+                            '&:hover': factura.voucher_image && {
+                              bgcolor: '#bbdefb',
+                              borderColor: '#1976d2',
+                              color: '#0d47a1',
+                              boxShadow: '0 4px 12px rgba(25, 118, 210, 0.2)',
+                            },
+                          }}
+                        >
+                          {factura.voucher_image ? 'Ver Voucher' : 'Sin voucher'}
+                        </Avatar>
                       </TableCell>
                       <TableCell>{factura.cupones}</TableCell>
                     </TableRow>
@@ -844,36 +878,70 @@ const PendienteDialog = ({ open, onClose }: PendienteDialogProps) => {
                       <TableCell>
                         <Avatar
                           variant="rounded"
-                          src={factura.cabecera_image}
                           alt="Cabecera"
-                          sx={{
-                            width: 120,
-                            height: 120,
-                            border: `1px solid ${theme.palette.divider}`,
-                            cursor: 'pointer',
-                          }}
                           onClick={() => {
-                            setSelectedImage(factura.cabecera_image);
-                            setOpenImageDialog(true);
+                            if (factura.cabecera_image) {
+                              setSelectedImage(factura.cabecera_image);
+                              setOpenImageDialog(true);
+                            }
                           }}
-                        />
+                          sx={{
+                            width: 100,
+                            height: 50,
+                            cursor: factura.cabecera_image ? 'pointer' : 'default',
+                            bgcolor: factura.cabecera_image ? '#e3f2fd' : '#f5f5f5',
+                            color: factura.cabecera_image ? '#1976d2' : '#9e9e9e',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            border: factura.cabecera_image ? '2px dashed #90caf9' : '1px solid #ccc',
+                            transition: 'all 0.3s ease-in-out',
+                            '&:hover': factura.cabecera_image && {
+                              bgcolor: '#bbdefb',
+                              borderColor: '#1976d2',
+                              color: '#0d47a1',
+                              boxShadow: '0 4px 12px rgba(25, 118, 210, 0.2)',
+                            },
+                          }}
+                        >
+                          {factura.cabecera_image ? 'Ver Imagen' : 'Sin imagen'}
+                        </Avatar>
                       </TableCell>
                       <TableCell>
                         <Avatar
                           variant="rounded"
-                          src={factura.voucher_image}
-                          alt="Cabecera"
-                          sx={{
-                            width: 120,
-                            height: 120,
-                            border: `1px solid ${theme.palette.divider}`,
-                            cursor: 'pointer',
-                          }}
+                          alt="Voucher"
                           onClick={() => {
-                            setSelectedImage(factura.voucher_image);
-                            setOpenImageDialog(true);
+                            if (factura.voucher_image) {
+                              setSelectedImage(factura.voucher_image);
+                              setOpenImageDialog(true);
+                            }
                           }}
-                        />
+                          sx={{
+                            width: 100,
+                            height: 50,
+                            cursor: factura.voucher_image ? 'pointer' : 'default',
+                            bgcolor: factura.voucher_image ? '#e3f2fd' : '#f5f5f5',
+                            color: factura.voucher_image ? '#1976d2' : '#9e9e9e',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            border: factura.voucher_image ? '2px dashed #90caf9' : '1px solid #ccc',
+                            transition: 'all 0.3s ease-in-out',
+                            '&:hover': factura.voucher_image && {
+                              bgcolor: '#bbdefb',
+                              borderColor: '#1976d2',
+                              color: '#0d47a1',
+                              boxShadow: '0 4px 12px rgba(25, 118, 210, 0.2)',
+                            },
+                          }}
+                        >
+                          {factura.voucher_image ? 'Ver Voucher' : 'Sin voucher'}
+                        </Avatar>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -1002,36 +1070,70 @@ const RechazadasDialog = ({ open, onClose }: RechazadasDialogProps) => {
                       <TableCell>
                         <Avatar
                           variant="rounded"
-                          src={factura.cabecera_image}
                           alt="Cabecera"
-                          sx={{
-                            width: 120,
-                            height: 120,
-                            border: `1px solid ${theme.palette.divider}`,
-                            cursor: 'pointer',
-                          }}
                           onClick={() => {
-                            setSelectedImage(factura.cabecera_image);
-                            setOpenImageDialog(true);
+                            if (factura.cabecera_image) {
+                              setSelectedImage(factura.cabecera_image);
+                              setOpenImageDialog(true);
+                            }
                           }}
-                        />
+                          sx={{
+                            width: 100,
+                            height: 50,
+                            cursor: factura.cabecera_image ? 'pointer' : 'default',
+                            bgcolor: factura.cabecera_image ? '#e3f2fd' : '#f5f5f5',
+                            color: factura.cabecera_image ? '#1976d2' : '#9e9e9e',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            border: factura.cabecera_image ? '2px dashed #90caf9' : '1px solid #ccc',
+                            transition: 'all 0.3s ease-in-out',
+                            '&:hover': factura.cabecera_image && {
+                              bgcolor: '#bbdefb',
+                              borderColor: '#1976d2',
+                              color: '#0d47a1',
+                              boxShadow: '0 4px 12px rgba(25, 118, 210, 0.2)',
+                            },
+                          }}
+                        >
+                          {factura.cabecera_image ? 'Ver Imagen' : 'Sin imagen'}
+                        </Avatar>
                       </TableCell>
                       <TableCell>
                         <Avatar
                           variant="rounded"
-                          src={factura.voucher_image}
-                          alt="Cabecera"
-                          sx={{
-                            width: 120,
-                            height: 120,
-                            border: `1px solid ${theme.palette.divider}`,
-                            cursor: 'pointer',
-                          }}
+                          alt="Voucher"
                           onClick={() => {
-                            setSelectedImage(factura.voucher_image);
-                            setOpenImageDialog(true);
+                            if (factura.voucher_image) {
+                              setSelectedImage(factura.voucher_image);
+                              setOpenImageDialog(true);
+                            }
                           }}
-                        />
+                          sx={{
+                            width: 100,
+                            height: 50,
+                            cursor: factura.voucher_image ? 'pointer' : 'default',
+                            bgcolor: factura.voucher_image ? '#e3f2fd' : '#f5f5f5',
+                            color: factura.voucher_image ? '#1976d2' : '#9e9e9e',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            border: factura.voucher_image ? '2px dashed #90caf9' : '1px solid #ccc',
+                            transition: 'all 0.3s ease-in-out',
+                            '&:hover': factura.voucher_image && {
+                              bgcolor: '#bbdefb',
+                              borderColor: '#1976d2',
+                              color: '#0d47a1',
+                              boxShadow: '0 4px 12px rgba(25, 118, 210, 0.2)',
+                            },
+                          }}
+                        >
+                          {factura.voucher_image ? 'Ver Voucher' : 'Sin voucher'}
+                        </Avatar>
                       </TableCell>
                       <TableCell>{factura.observacion}</TableCell>
                     </TableRow>
