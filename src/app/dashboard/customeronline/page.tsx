@@ -375,7 +375,7 @@ const FacturaDialog = ({ open, onClose, onSubmit }: FacturaDialogProps) => {
     };
 
     onSubmit(processedData);
-    onClose();
+    //onClose();
   };
 
   return (
@@ -1063,6 +1063,8 @@ const BotonesFactura = () => {
   const [pendientesOpen, setPendientesOpen] = useState(false);
   const [rechazadasOpen, setRechazadasOpen] = useState(false);
   const [successDialogOpen, setSuccessDialogOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSuccessOnClose = () => {
     setDialogOpen(false);
@@ -1070,7 +1072,8 @@ const BotonesFactura = () => {
   }
   const handleSubmitFactura = async (formData: ProcessedFormData) => {
     try {
-      const token = localStorage.getItem('custom-auth-token');
+      setLoading(true);
+      setSuccessDialogOpen(true);
       const userString = localStorage.getItem('user');
 
       if (!userString) {
@@ -1109,11 +1112,12 @@ const BotonesFactura = () => {
       console.log('Respuesta del backend:', result);
       setDialogOpen(false);
       console.log('Factura registrada correctamente.')
-      setSuccessDialogOpen(true);
-      setDialogOpen(true);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error al registrar factura:', error);
+      setError(error.message ? error.message : 'Error al cargar la factura');
       setDialogOpen(true);
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -1243,29 +1247,43 @@ const BotonesFactura = () => {
       <PendienteDialog open={pendientesOpen} onClose={() => setPendientesOpen(false)} />
       <RechazadasDialog open={rechazadasOpen} onClose={() => setRechazadasOpen(false)} />
       <Dialog open={successDialogOpen} onClose={handleSuccessOnClose} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <CheckCircle color="success" size={38} />
-          Factura Registrada
-        </DialogTitle>
-        <DialogContent dividers>
-          <Box sx={{ textAlign: 'center', p: 2 }}>
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
-              ¡Su factura ha sido ingresada correctamente!
+        {
+          loading ? (
+            <Box display="flex" justifyContent="center" p={4}>
+              <CircularProgress />
+            </Box>
+          ) : error ? (
+            <Typography color="error" p={2}>
+              {error}
             </Typography>
-            <Typography variant="body1" gutterBottom>
-              Será revisada por el personal de Servicio al Cliente.
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Para verificar si fue <strong>aprobada</strong>, <strong>rechazada</strong> o continúa <strong>pendiente</strong>,
-              por favor consulte los módulos correspondientes en esta sección.
-            </Typography>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleSuccessOnClose} variant="contained" color="primary">
-            Entendido
-          </Button>
-        </DialogActions>
+          ) : (
+            <>
+              <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <CheckCircle color="success" size={38} />
+                Factura Registrada
+              </DialogTitle>
+              <DialogContent dividers>
+                <Box sx={{ textAlign: 'center', p: 2 }}>
+                  <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
+                    ¡Su factura ha sido ingresada correctamente!
+                  </Typography>
+                  <Typography variant="body1" gutterBottom>
+                    Será revisada por el personal de Servicio al Cliente.
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Para verificar si fue <strong>aprobada</strong>, <strong>rechazada</strong> o continúa <strong>pendiente</strong>,
+                    por favor consulte los módulos correspondientes en esta sección.
+                  </Typography>
+                </Box>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleSuccessOnClose} variant="contained" color="primary">
+                  Entendido
+                </Button>
+              </DialogActions>
+            </>
+          )
+        }
       </Dialog>
     </Box>
   );
