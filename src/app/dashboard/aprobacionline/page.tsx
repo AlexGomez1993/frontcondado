@@ -4,8 +4,10 @@ import React, { useEffect, useState } from 'react';
 import {
   Alert,
   Avatar,
+  Box,
   Button,
   Chip,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -97,7 +99,7 @@ const FacturasTable = () => {
   const [formasPago, setFormasPago] = useState<any[]>([]);
   const [formaPagoId, setFormaPagoId] = useState<number | ''>('');
   const [processing, setProcessing] = useState(false);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(3);
   const [currentPage, setCurrentPage] = useState(1);
   const [filterRuc, setFilterRuc] = useState<string>('');
   const [totalPage, setTotalPage] = useState(1);
@@ -107,6 +109,8 @@ const FacturasTable = () => {
   const [openCuponDialog, setOpenCuponDialog] = useState(false);
   const [estadoImpresion, setEstadoImpresion] = useState<'listo' | 'imprimiendo' | 'transicion' | 'finalizado'>('listo');
   const [cuentaRegresiva, setCuentaRegresiva] = useState(5);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const eliminarFactura = (index: number) => {
     setFacturasAgregadas(facturasAgregadas.filter((_, i) => i !== index));
@@ -114,6 +118,7 @@ const FacturasTable = () => {
 
   const fetchFacturas = async () => {
     try {
+      setLoading(true);
       const response = await axiosClient.get(
         `/api/facturas?estadoFactura=1`, {
         params: {
@@ -127,8 +132,11 @@ const FacturasTable = () => {
       setFacturas(response.data.data || []);
       setTotalPage(response.data.totalPaginas);
       setTotalFacturas(response.data.total);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error al cargar facturas:', error);
+      setError(error.message ? error.message : 'Error al cargar facturas')
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -141,7 +149,7 @@ const FacturasTable = () => {
       try {
         const response = await axiosClient.get(`/api/formasPago?activo=1`);
         // Filtrar solo las activa
-        setFormasPago(response.data.data ||[]);
+        setFormasPago(response.data.data || []);
       } catch (error) {
         console.error('Error al cargar formas de pago:', error);
         setFormasPago([]);
@@ -164,7 +172,7 @@ const FacturasTable = () => {
     fetchCampanias();
   }, []);
   const handleProcesarFactura = async () => {
-    if (!facturasAgregadas || facturasAgregadas.length<1 || !selectedPromocion || !selectedCampania || saldo === null) return;
+    if (!facturasAgregadas || facturasAgregadas.length < 1 || !selectedPromocion || !selectedCampania || saldo === null) return;
 
     try {
       const response = await axiosClient.put(`/api/facturas/procesarFacturaWeb`, {
@@ -185,11 +193,11 @@ const FacturasTable = () => {
 
       const { cuponesImprimir } = response.data;
 
-        if (cuponesImprimir?.length) {
-          setCuponesPorImprimir(cuponesImprimir);
-          setIndiceCampania(0);
-          setOpenCuponDialog(true);
-        }
+      if (cuponesImprimir?.length) {
+        setCuponesPorImprimir(cuponesImprimir);
+        setIndiceCampania(0);
+        setOpenCuponDialog(true);
+      }
 
       setSnackbarType('success');
       setSnackbarMsg('Factura procesada con éxito');
@@ -220,10 +228,10 @@ const FacturasTable = () => {
     const total = saldoNumerico + montoFactura;
     const cantidadCupones = Math.floor(total / montoMinimo) * factor * numCuponesLocal;
     let nuevoSaldo = total % montoMinimo;
-    if(cantidadCupones==0){
+    if (cantidadCupones == 0) {
       nuevoSaldo = total;
     }
-    
+
     // Agregar al estado de facturas agregadas
     setFacturasAgregadas((prev) => [
       ...prev,
@@ -313,7 +321,7 @@ const FacturasTable = () => {
     setSnackbarOpen(false);
   };
 
-  const handleFacturaClose = () =>{
+  const handleFacturaClose = () => {
     setOpenFacturaDialog(false)
     setFacturasAgregadas([]);
 
@@ -327,19 +335,19 @@ const FacturasTable = () => {
   const imprimirCupones = () => {
     const imprimirSecuencial = async (i: number) => {
       const campaniaActual = cuponesPorImprimir[indiceCampania];
-  
+
       if (!campaniaActual) return;
-  
+
       const start = campaniaActual.ultimoCuponImpreso + 1;
       const end = campaniaActual.ultimoCuponImprimir;
       const campaniaSelect = campanias.find((c) => c.nombre === campaniaActual.campania);
       const logo = campaniaSelect?.logo;
-  
+
       if (i > end) {
         // Fin de campaña actual
         setEstadoImpresion('transicion');
         setCuentaRegresiva(5);
-  
+
         const countdown = setInterval(() => {
           setCuentaRegresiva((prev) => {
             if (prev === 1) {
@@ -354,13 +362,13 @@ const FacturasTable = () => {
             return prev - 1;
           });
         }, 1000);
-  
+
         return;
       }
-  
+
       const win = window.open('');
       if (!win) return;
-  
+
       win.document.write(`<!DOCTYPE html>
         <html>
           <head>
@@ -407,9 +415,9 @@ const FacturasTable = () => {
             </table>
           </body>
         </html>`);
-  
+
       win.document.close();
-  
+
       win.onload = () => {
         win.focus();
         setTimeout(() => {
@@ -419,7 +427,7 @@ const FacturasTable = () => {
         }, 100);
       };
     };
-  
+
     const currentStart = cuponesPorImprimir[indiceCampania]?.ultimoCuponImpreso + 1 || 1;
     imprimirSecuencial(currentStart);
   };
@@ -436,7 +444,7 @@ const FacturasTable = () => {
         const saldoCamPromo = saldosCliente.find((s: any) => s.campania_id == selectedCampania!.id && s.promocion_id == promocionSeleccionadaId)
         if (saldoCamPromo) {
           setSaldo(saldoCamPromo.saldo);
-        }else{
+        } else {
           setSaldo(0);
         }
 
@@ -490,7 +498,7 @@ const FacturasTable = () => {
         <Table sx={{ minWidth: 1200 }}>
           <TableHead sx={tableHeaderStyles}>
             <TableRow>
-              <TableCell>#</TableCell>
+              {/* <TableCell>#</TableCell> */}
               <TableCell>Fecha Registro</TableCell>
               <TableCell>RUC</TableCell>
               <TableCell>Local</TableCell>
@@ -505,10 +513,26 @@ const FacturasTable = () => {
           </TableHead>
 
           <TableBody>
-            {Array.isArray(facturas) &&
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={10} align="center">
+                  <Box display="flex" justifyContent="center" p={4}>
+                    <CircularProgress />
+                  </Box>
+                </TableCell>
+              </TableRow>
+            ) : error ? (
+              <TableRow>
+                <TableCell colSpan={10} align="center">
+                  <Typography color="error" p={2}>
+                    {error}
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            ) : Array.isArray(facturas) && facturas.length > 0 ? (
               facturas.map((factura, idx) => (
                 <TableRow key={factura.id} hover sx={{ '&:last-child td': { border: 0 } }}>
-                  <TableCell>{idx + 1}</TableCell>
+                  {/* <TableCell>{idx + 1}</TableCell> */}
                   <TableCell> {moment(factura.fechaRegistro).add(5, 'hours').format('DD/MM/YYYY HH:mm:ss')}</TableCell>
                   <TableCell>{factura.ruc}</TableCell>
                   <TableCell>{factura.tienda ? factura.tienda.nombre : '-'}</TableCell>
@@ -519,27 +543,71 @@ const FacturasTable = () => {
                   <TableCell>
                     <Avatar
                       variant="rounded"
-                      src={factura.imagen}
                       alt="Cabecera"
-                      sx={{ width: 120, height: 120, border: `1px solid ${theme.palette.divider}`, cursor: 'pointer' }}
                       onClick={() => {
-                        setSelectedImage(factura.imagen);
-                        setOpenImageDialog(true);
+                        if (factura.imagen) {
+                          setSelectedImage(factura.imagen);
+                          setOpenImageDialog(true);
+                        }
                       }}
-                    />
+                      sx={{
+                        width: 100,
+                        height: 50,
+                        cursor: factura.imagen ? 'pointer' : 'default',
+                        bgcolor: factura.imagen ? '#e3f2fd' : '#f5f5f5',
+                        color: factura.imagen ? '#1976d2' : '#9e9e9e',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        fontSize: 14,
+                        fontWeight: 'bold',
+                        border: factura.imagen ? '2px dashed #90caf9' : '1px solid #ccc',
+                        transition: 'all 0.3s ease-in-out',
+                        '&:hover': factura.imagen && {
+                          bgcolor: '#bbdefb',
+                          borderColor: '#1976d2',
+                          color: '#0d47a1',
+                          boxShadow: '0 4px 12px rgba(25, 118, 210, 0.2)',
+                        },
+                      }}
+                    >
+                      {factura.imagen ? 'Ver Imagen' : 'Sin imagen'}
+                    </Avatar>
                   </TableCell>
 
                   <TableCell>
                     <Avatar
                       variant="rounded"
-                      src={factura.voucher}
                       alt="Voucher"
-                      sx={{ width: 120, height: 120, border: `1px solid ${theme.palette.divider}`, cursor: 'pointer' }}
                       onClick={() => {
-                        setSelectedImage(factura.voucher);
-                        setOpenImageDialog(true);
+                        if (factura.voucher) {
+                          setSelectedImage(factura.voucher);
+                          setOpenImageDialog(true);
+                        }
                       }}
-                    />
+                      sx={{
+                        width: 100,
+                        height: 50,
+                        cursor: factura.voucher ? 'pointer' : 'default',
+                        bgcolor: factura.voucher ? '#e3f2fd' : '#f5f5f5',
+                        color: factura.voucher ? '#1976d2' : '#9e9e9e',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        fontSize: 14,
+                        fontWeight: 'bold',
+                        border: factura.voucher ? '2px dashed #90caf9' : '1px solid #ccc',
+                        transition: 'all 0.3s ease-in-out',
+                        '&:hover': factura.voucher && {
+                          bgcolor: '#bbdefb',
+                          borderColor: '#1976d2',
+                          color: '#0d47a1',
+                          boxShadow: '0 4px 12px rgba(25, 118, 210, 0.2)',
+                        },
+                      }}
+                    >
+                      {factura.voucher ? 'Ver Voucher' : 'Sin voucher'}
+                    </Avatar>
                   </TableCell>
                   <TableCell align="center">
                     <Button
@@ -575,7 +643,16 @@ const FacturasTable = () => {
                     </Button>
                   </TableCell>
                 </TableRow>
-              ))}
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={10} align="center">
+                  <Typography p={2} color="textSecondary">
+                    No hay facturas para mostrar.
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </TableContainer>
@@ -797,7 +874,7 @@ const FacturasTable = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {facturasAgregadas.map((factura,index) => (
+                {facturasAgregadas.map((factura, index) => (
                   <TableRow key={index}>
                     <TableCell>{factura.promocion}</TableCell>
                     <TableCell>${factura.montoMinimo}</TableCell>
