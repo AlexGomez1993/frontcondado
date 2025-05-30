@@ -373,7 +373,7 @@ export default function FacturaForm() {
       setSnackbarOpen(true);
       return;
     }
-    if (!monto || !local) {
+    if (!monto || !local || local == '0') {
       setSnackbarType('warning');
       setSnackbarMsg('Por favor revise que todos los campos estén llenos');
       setSnackbarOpen(true);
