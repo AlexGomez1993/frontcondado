@@ -24,6 +24,7 @@ import {
   Typography,
   DialogContentText,
   useTheme,
+  Autocomplete,
 } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import Pagination from '@mui/material/Pagination';
@@ -410,16 +411,22 @@ const FacturaDialog = ({ open, onClose, onSubmit }: FacturaDialogProps) => {
 
           <Grid item xs={12} md={6}>
             <FormControl fullWidth>
-              <InputLabel>Local</InputLabel>
-              <Select name="local" value={formData.local} onChange={handleChange} label="Local" variant="outlined" size="small">
-                {locales.map((local) => (
-                  <MenuItem key={local.id} value={local.id}>
-                    {local.nombre}
-                  </MenuItem>
-                ))}
-              </Select>
+              <Autocomplete
+                options={locales}
+                getOptionLabel={(option) => option?.nombre || 'Seleccione'}
+                isOptionEqualToValue={(option, value) => option?.id === value?.id}
+                onChange={(event, newValue) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    local: newValue?.id?.toString() || '',
+                  }));
+                }}
+                value={locales.find((loc) => loc.id.toString() === formData.local) || null}
+                renderInput={(params) => (
+                  <TextField {...params} label="Local" size="small" variant="outlined" />
+                )}
+              />
             </FormControl>
-
           </Grid>
 
           <Grid item xs={12} md={6}>

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   Alert,
+  Autocomplete,
   Box,
   Button,
   Dialog,
@@ -887,16 +888,16 @@ export default function FacturaForm() {
         })}
         <Grid item xs={12} sm={3}>
           <FormControl fullWidth sx={{ mt: 0.3 }}>
-            <InputLabel id="local-label">Local</InputLabel>
-            <Select labelId="local-label" fullWidth value={local} onChange={(e) => setLocal(e.target.value)} size='small' label="Local"
-              variant="outlined">
-              <MenuItem value='0'>Seleccione</MenuItem>
-              {locales.length > 0 && locales?.map((t) => (
-                <MenuItem key={t.id} value={t.id.toString()}>
-                  {t.nombre}
-                </MenuItem>
-              ))}
-            </Select>
+            <Autocomplete
+              options={locales}
+              getOptionLabel={(option) => option?.nombre || 'Seleccione'}
+              isOptionEqualToValue={(option, value) => option?.id === value?.id}
+              onChange={(event, newValue) => setLocal(newValue?.id?.toString() || '0')}
+              value={locales.find((loc) => loc.id.toString() === local) || null}
+              renderInput={(params) => (
+                <TextField {...params} label="Local" size="small" variant="outlined" />
+              )}
+            />
           </FormControl>
         </Grid>
 
