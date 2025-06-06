@@ -180,7 +180,7 @@ export function ResetPasswordForm(): React.JSX.Element {
             color: 'common.white',
             textAlign: 'center',
             textShadow: '0 2px 4px rgba(0,0,0,0.3)',
-          }}>Recuperar contraseña</Typography>
+          }}>Cambiar contraseña</Typography>
 
           <form onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={2}>

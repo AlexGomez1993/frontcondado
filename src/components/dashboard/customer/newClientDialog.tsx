@@ -117,7 +117,7 @@ export const NewClientDialog = ({ openDialog, setOpenDialog, cliente, setCliente
 
       const clienteCreado = response.data.cliente;
       setSnackbarType('success');
-      setSnackbarMsg('Cliente editado con éxito');
+      setSnackbarMsg('Cliente registrado con éxito');
       setCliente({ ...clienteCreado, ciRuc: clienteCreado.ruc, nombres: clienteCreado.nombre });
 
       reset();
