@@ -218,15 +218,24 @@ const CampaignsPage = () => {
                         startIcon={<PlusCircle size={20} />}
                         sx={{ marginRight: 1 }}
                       >
-                        Agregar Promociones
+                        Promociones
                       </Button>
                       <Button
                         onClick={() => router.push(`/campaigns/addStores/${campaign.id}`)}
                         variant="contained"
                         color="secondary"
                         startIcon={<PlusCircle size={20} />}
+                        sx={{ marginRight: 1 }}
                       >
-                        Agregar Locales
+                        Locales
+                      </Button>
+                      <Button
+                        onClick={() => router.push(`/campaigns/addPayMethods/${campaign.id}`)}
+                        variant="contained"
+                        color="success"
+                        startIcon={<PlusCircle size={20} />}
+                      >
+                        Formas Pago
                       </Button>
                     </TableCell>
                   </TableRow>

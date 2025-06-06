@@ -1,4 +1,5 @@
 import { Store } from "./comercial_store";
+import { PaymentMethod } from "./payment_method";
 import { Promotion } from "./promotion";
 
 export interface Campaign {
@@ -10,6 +11,7 @@ export interface Campaign {
   logo?: string;
   promociones?: Promotion[];
   tiendas?: Store[];
+  formaspago?: PaymentMethod[];
 }
 
 interface Configuracion {

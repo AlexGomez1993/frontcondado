@@ -221,20 +221,6 @@ const FacturaDialog = ({ open, onClose, onSubmit }: FacturaDialogProps) => {
   });
 
   useEffect(() => {
-    const fetchFormasPago = async () => {
-      try {
-        const response = await axiosClient.get<PaymentMethodResponse>(`/api/formasPago?activo=1`);
-        setFormasPago(response.data.data);
-      } catch (error) {
-        console.error('Error al cargar formas de pago:', error);
-        setFormasPago([]);
-      }
-    };
-
-    fetchFormasPago();
-  }, []);
-
-  useEffect(() => {
     return () => {
       if (formData.headerPreview) {
         URL.revokeObjectURL(formData.headerPreview);
@@ -255,6 +241,7 @@ const FacturaDialog = ({ open, onClose, onSubmit }: FacturaDialogProps) => {
         if (campaniasActivas.length === 1) {
           const unicaCampania = campaniasActivas[0];
           setLocales(unicaCampania.tiendas || []);
+          setFormasPago(unicaCampania.formaspago || [])
           setFormData((prev) => ({
             ...prev,
             campania: String(unicaCampania.id),
@@ -394,6 +381,7 @@ const FacturaDialog = ({ open, onClose, onSubmit }: FacturaDialogProps) => {
                   const selectedId = e.target.value;
                   const selectedCampania = campanias.find((c) => c.id === parseInt(selectedId));
                   setLocales(selectedCampania?.tiendas || []);
+                  setFormasPago(selectedCampania?.formaspago || []);
                   setFormData((prev) => ({ ...prev, campania: selectedId, local: '' }));
                 }}
                 label="Campaña"

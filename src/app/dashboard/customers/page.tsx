@@ -692,7 +692,12 @@ export default function FacturaForm() {
   }
 
   const handleValidar = async () => {
-    if (!facturaNum) return;
+    if (!facturaNum || !local || local == '0'){
+      setSnackbarType('error');
+      setSnackbarMsg('Revise que los campos de local y número de factura esten llenos.');
+      setSnackbarOpen(true);
+      return;
+    } 
 
     try {
       const response = await axiosClient.post(`/api/facturas/validarFactura`, {
@@ -718,6 +723,9 @@ export default function FacturaForm() {
   };
   const handleCloseDialogValidate = () => {
     setOpenDialogValidate(false);
+  };
+    const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -883,7 +891,7 @@ export default function FacturaForm() {
                     <MenuItem value={0}>
                       Seleccione...
                     </MenuItem>
-                    {formasPago.map((fp) => (
+                    {campania?.formaspago?.map((fp) => (
                       <MenuItem key={fp.id} value={fp.id}>
                         {fp.nombre}
                       </MenuItem>
@@ -1125,10 +1133,10 @@ export default function FacturaForm() {
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={2000}
-        onClose={() => setSnackbarOpen(false)}
+        onClose={handleSnackbarClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarType} sx={{ width: '100%' }}>
+        <Alert onClose={handleSnackbarClose} severity={snackbarType} sx={{ width: '100%' }}>
           {snackbarMsg}
         </Alert>
       </Snackbar>
