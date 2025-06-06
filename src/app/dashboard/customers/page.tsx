@@ -560,7 +560,7 @@ export default function FacturaForm() {
     setFacturasIngreso(nuevaFacturas);
   };
 
-  const imprimirCupones = () => {
+  /* const imprimirCupones = () => {
     const imprimirSecuencial = async (i: number) => {
       const campaniaActual = cuponesPorImprimir[indiceCampania]; // accede dinámicamente
 
@@ -658,7 +658,194 @@ export default function FacturaForm() {
 
     const currentStart = cuponesPorImprimir[indiceCampania]?.ultimoCuponImpreso + 1 || 1;
     imprimirSecuencial(currentStart);
+  }; */
+
+const imprimirCupones = () => {
+  const imprimirSecuencial = async (i: number) => {
+    const campaniaActual = cuponesPorImprimir[indiceCampania];
+    if (!campaniaActual) return;
+
+    const start = campaniaActual.ultimoCuponImpreso + 1;
+    const end = campaniaActual.ultimoCuponImprimir;
+    const totalCupones = end - start + 1;
+    const campaniaSelect = campanias.find((c) => c.nombre === campaniaActual.campania);
+    const logo = campaniaSelect?.logo;
+
+    const isCampaniaMujer2025 = campaniaActual.campania === 'NAVIDAD 2024';
+
+    // ✅ Condición de corte para campañas normales
+    if (!isCampaniaMujer2025 && i > end) {
+      setEstadoImpresion('transicion');
+      setCuentaRegresiva(5);
+
+      const countdown = setInterval(() => {
+        setCuentaRegresiva((prev) => {
+          if (prev === 1) {
+            clearInterval(countdown);
+            if (indiceCampania + 1 < cuponesPorImprimir.length) {
+              setIndiceCampania(indiceCampania + 1);
+              setEstadoImpresion('listo');
+            } else {
+              setEstadoImpresion('finalizado');
+            }
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return;
+    }
+
+    // 🎯 Campaña especial: imprime solo un cupón
+    if (isCampaniaMujer2025) {
+      const win = window.open('');
+      if (!win) return;
+
+      win.document.write(`<!DOCTYPE html>
+        <html>
+          <head>
+            <title>Cupon</title>
+            <style>
+              body { font-family: Arial, sans-serif; font-size: 7pt; }
+              table { border-collapse: collapse; width: 100%; border: 2px dotted black; padding: 2px; }
+              td { padding: 2px 4px; vertical-align: top; }
+              .titulo-condado { font-size: 10pt; font-weight: bold; text-align: center; margin: 0; }
+              .texto-justificado { display: block; text-align: justify; }
+              .shopping-dollars { font-weight: bold; font-size: 8pt; color: #D32F2F; padding-top: 8px; }
+            </style>
+          </head>
+          <body>
+            <table>
+              <tr>
+                <td style="text-align:left;">
+                  <img src="/assets/bnCondado.png" style="width:125px;" />
+                </td>
+                <td style="text-align:right;">
+                  <img src="${process.env.NEXT_PUBLIC_API_URL! + logo}" style="width:125px; height:75px" />
+                </td>
+              </tr>
+              <tr><td colspan="2"><p class="titulo-condado">CONDADO SHOPPING</p></td></tr>
+              <tr><td><strong>NÚMERO DE CUPON:</strong></td><td>${start}</td></tr>
+              <tr><td><strong>FECHA Y HORA:</strong></td><td>${new Date().toLocaleString()}</td></tr>
+              <tr><td><strong>CLIENTE:</strong></td><td>${cliente?.nombres} ${cliente?.apellidos}</td></tr>
+              <tr><td><strong>CI/RUC:</strong></td><td>${cliente?.ciRuc}</td></tr>
+              <tr><td><strong>TELÉFONO:</strong></td><td>${cliente?.telefono}</td></tr>
+              <tr><td><strong>CELULAR:</strong></td><td>${cliente?.celular}</td></tr>
+              <tr><td><strong>DIRECCIÓN:</strong></td><td>${cliente?.direccion}</td></tr>
+              <tr><td><strong>CAMPAÑA:</strong></td><td>${campaniaActual.campania}</td></tr>
+              <tr><td colspan="2" class="shopping-dollars">
+                SHOPPING DOLLARS A ENTREGAR: ${totalCupones}
+              </td></tr>
+              <tr>
+                <td colspan="2">
+                  <strong>Nota: Favor conservar sus facturas.</strong><br>
+                  <span class="texto-justificado">
+                    “El cliente para participar en la promoción confiere voluntariamente sus datos personales, y autoriza a que
+                    los mismos sean recopilados y utilizados para las campañas del Centro Comercial, tratados de conformidad con
+                    la Ley Orgánica de Protección de Datos Personales. Estos no serán transferidos a terceros. Si el cliente no
+                    desea constar en la base de datos del centro comercial, puede solicitar su eliminación al correo
+                    info@elcondadoshopping.com.”
+                  </span>
+                </td>
+              </tr>
+            </table>
+          </body>
+        </html>`);
+
+      win.document.close();
+      win.onload = () => {
+        win.focus();
+        setTimeout(() => {
+          win.print();
+          win.close();
+
+          // ⏭️ Transición a la siguiente campaña
+          setEstadoImpresion('transicion');
+          setCuentaRegresiva(5);
+          const countdown = setInterval(() => {
+            setCuentaRegresiva((prev) => {
+              if (prev === 1) {
+                clearInterval(countdown);
+                if (indiceCampania + 1 < cuponesPorImprimir.length) {
+                  setIndiceCampania(indiceCampania + 1);
+                  setEstadoImpresion('listo');
+                } else {
+                  setEstadoImpresion('finalizado');
+                }
+              }
+              return prev - 1;
+            });
+          }, 1000);
+        }, 100);
+      };
+
+      return;
+    }
+
+    // 🖨️ Impresión secuencial normal
+    const win = window.open('');
+    if (!win) return;
+
+    win.document.write(`<!DOCTYPE html>
+        <html>
+          <head>
+            <title>Cupon</title>
+            <style>
+              body { font-family: Arial, sans-serif; font-size: 7pt; }
+              table { border-collapse: collapse; width: 100%; border: 2px dotted black; padding: 2px; }
+              td { padding: 2px 4px; vertical-align: top; }
+              .titulo-condado { font-size: 10pt; font-weight: bold; text-align: center; margin: 0; }
+              .texto-justificado { display: block; text-align: justify; }
+            </style>
+          </head>
+          <body>
+            <table>
+              <tr>
+                <td style="text-align:left;">
+                  <img src="/assets/bnCondado.png" style="width:125px;" />
+                </td>
+                <td style="text-align:right;">
+                  <img src="${process.env.NEXT_PUBLIC_API_URL! + logo}" style="width:125px; height:75px" />
+                </td>
+              </tr>
+              <tr><td colspan="2"><p class="titulo-condado">CONDADO SHOPPING</p></td></tr>
+              <tr><td><strong>NÚMERO DE CUPON:</strong></td><td>${i}</td></tr>
+              <tr><td><strong>FECHA Y HORA:</strong></td><td>${new Date().toLocaleString()}</td></tr>
+              <tr><td><strong>CLIENTE:</strong></td><td>${cliente?.nombres} ${cliente?.apellidos}</td></tr>
+              <tr><td><strong>CI/RUC:</strong></td><td>${cliente?.ciRuc}</td></tr>
+              <tr><td><strong>TELÉFONO:</strong></td><td>${cliente?.telefono}</td></tr>
+              <tr><td><strong>CELULAR:</strong></td><td>${cliente?.celular}</td></tr>
+              <tr><td><strong>DIRECCIÓN:</strong></td><td>${cliente?.direccion}</td></tr>
+              <tr><td><strong>CAMPAÑA:</strong></td><td>${campaniaActual.campania}</td></tr>
+              <tr>
+                <td colspan="2">
+                  <strong>Nota: Favor conservar sus facturas.</strong><br>
+                  <span class="texto-justificado">
+                    “El cliente para participar en la promoción confiere voluntariamente sus datos personales, y autoriza a que
+                    los mismos sean recopilados y utilizados para las campañas del Centro Comercial, tratados de conformidad con
+                    la Ley Orgánica de Protección de Datos Personales. Estos no serán transferidos a terceros. Si el cliente no
+                    desea constar en la base de datos del centro comercial, puede solicitar su eliminación al correo
+                    info@elcondadoshopping.com.”
+                  </span>
+                </td>
+              </tr>
+            </table>
+          </body>
+        </html>`);
+    win.document.close();
+
+    win.onload = () => {
+      win.focus();
+      setTimeout(() => {
+        win.print();
+        win.close();
+        imprimirSecuencial(i + 1);
+      }, 100);
+    };
   };
+
+  const currentStart = cuponesPorImprimir[indiceCampania]?.ultimoCuponImpreso + 1 || 1;
+  imprimirSecuencial(currentStart);
+};
 
   const handleGuardarDatosCliente = async () => {
     try {
