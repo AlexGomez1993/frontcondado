@@ -86,6 +86,7 @@ export default function FacturaForm() {
   const [monto, setMonto] = useState('');
   const [facturaNum, setFacturaNum] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
+  const [openDialogValidate, setOpenDialogValidate] = useState(false);
   const [locales, setLocales] = useState<Store[]>([]);
   const [campanias, setCampanias] = useState<Campaign[]>([]);
   const [formasPago, setFormasPago] = useState<PaymentMethod[]>([]);
@@ -689,6 +690,36 @@ export default function FacturaForm() {
       setSnackbarOpen(true);
     }
   }
+
+  const handleValidar = async () => {
+    if (!facturaNum) return;
+
+    try {
+      const response = await axiosClient.post(`/api/facturas/validarFactura`, {
+        numeroFactura: facturaNum,
+        tienda_id: local
+      });
+
+      if (response.status === 200) {
+        setFacturaNum('');
+        setOpenDialogValidate(true);
+      }
+    } catch (error: any) {
+      if (error.response && error.response.status === 404) {
+        setSnackbarType('success');
+        setSnackbarMsg('Factura válida. Puedes continuar.');
+        setSnackbarOpen(true);
+      } else {
+        setSnackbarType('error');
+        setSnackbarMsg('Error al validar la factura');
+        setSnackbarOpen(true);
+      }
+    }
+  };
+  const handleCloseDialogValidate = () => {
+    setOpenDialogValidate(false);
+  };
+
   return (
     <Box sx={{ p: 3 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
@@ -904,10 +935,12 @@ export default function FacturaForm() {
         <Grid item xs={12} sm={3}>
           <TextField
             fullWidth
-            label="Número de Factura"
+            label="Número de Factura (últimos 6 dígitos)"
             variant="outlined"
             value={facturaNum}
+            inputProps={{ maxLength: 6 }}
             onChange={(e) => setFacturaNum(e.target.value)}
+            onBlur={handleValidar}
             size='small'
           />
         </Grid>
@@ -1099,6 +1132,32 @@ export default function FacturaForm() {
           {snackbarMsg}
         </Alert>
       </Snackbar>
+      <Dialog open={openDialogValidate} onClose={handleCloseDialogValidate} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ textAlign: 'center', fontSize: '1.25rem', fontWeight: 'bold' }}>
+          Factura Registrada
+        </DialogTitle>
+        <DialogContent sx={{ textAlign: 'center', padding: '16px 24px' }}>
+          <Typography variant="body1" sx={{ fontSize: '1rem', color: '#555', marginBottom: '16px' }}>
+            La factura ya ha sido registrada anteriormente. No se permiten duplicados.
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ justifyContent: 'center' }}>
+          <Button
+            onClick={handleCloseDialogValidate}
+            color="secondary"
+            variant="contained"
+            sx={{
+              padding: '8px 16px',
+              backgroundColor: '#f44336',
+              '&:hover': {
+                backgroundColor: '#d32f2f',
+              },
+            }}
+          >
+            Cerrar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
