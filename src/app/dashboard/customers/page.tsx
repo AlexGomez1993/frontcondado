@@ -671,7 +671,7 @@ const imprimirCupones = () => {
     const campaniaSelect = campanias.find((c) => c.nombre === campaniaActual.campania);
     const logo = campaniaSelect?.logo;
 
-    const isCampaniaMujer2025 = campaniaActual.campania === 'NAVIDAD 2024';
+    const isCampaniaMujer2025 = campaniaActual.campania === 'SHOPPING DOLLAR 2025';
 
     // ✅ Condición de corte para campañas normales
     if (!isCampaniaMujer2025 && i > end) {
