@@ -341,7 +341,7 @@ const FacturaDialog = ({ open, onClose, onSubmit }: FacturaDialogProps) => {
       return;
     }
 
-    if (formaPago === '13' && !voucherImage) {
+    if (formaPago === '3' && !voucherImage) {
       alert('Debe subir la imagen del voucher para la forma de pago seleccionada.');
       return;
     }
@@ -512,7 +512,7 @@ const FacturaDialog = ({ open, onClose, onSubmit }: FacturaDialogProps) => {
               </>
             )}
           </Grid>
-          {formData.formaPago === '13' && (
+          {formData.formaPago === '3' && (
             <Grid item xs={12} md={6}>
               <Button variant="contained" component="label">
                 Subir Voucher de Pago
