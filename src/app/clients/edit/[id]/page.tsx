@@ -60,7 +60,7 @@ const ClientEditPage = ({ params }: { params: { id: string } }) => {
   React.useEffect(() => {
     const fetchClient = async () => {
       try {
-        const response = await axiosClient.get(`/api/clientes/${id}`);
+        const response = await axiosClient.get(`/api/clientes/id/${id}`);
         const data = response.data.clienteExistente;
         setClientData(data);
         // Rellenar campos
