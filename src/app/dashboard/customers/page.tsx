@@ -284,27 +284,7 @@ export default function FacturaForm() {
     setCliente({ ...cliente, ciRuc: ruc });
 
     if (ruc.length === 10 || ruc.length === 13) {
-      const clienteData = await obtenerClientePorRuc(ruc);
-      if (clienteData) {
-        setCliente({
-          ...cliente,
-          id: clienteData.id,
-          nombres: clienteData.nombre,
-          apellidos: clienteData.apellidos,
-          email: clienteData.email,
-          direccion: clienteData.direccion,
-          fechaNacimiento: clienteData.fecha_nacimiento,
-          telefono: clienteData.telefono,
-          celular: clienteData.celular,
-          ciRuc: clienteData.ruc,
-          sexo: clienteData.sexo || '',
-          provincia: clienteData.provincia || 'Pichincha',
-          ciudad: clienteData.ciudad || 'Quito',
-        });
-        return;
-      }
-
-      setOpenDialog(true);
+      buscarClientePorIdentificacion(ruc);
     }
   };
 
@@ -920,6 +900,39 @@ const imprimirCupones = () => {
     setSnackbarOpen(false);
   };
 
+  const handleRucKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
+  if (event.key === 'Enter') {
+    const ruc = (event.target as HTMLInputElement).value;
+    await buscarClientePorIdentificacion(ruc);
+  }
+};
+const buscarClientePorIdentificacion = async (identificacion: string) => {
+  
+  if (identificacion.length >= 6) { 
+    const clienteData = await obtenerClientePorRuc(identificacion);
+    if (clienteData) {
+      setCliente({
+        ...cliente,
+        id: clienteData.id,
+        nombres: clienteData.nombre,
+        apellidos: clienteData.apellidos,
+        email: clienteData.email,
+        direccion: clienteData.direccion,
+        fechaNacimiento: clienteData.fecha_nacimiento,
+        telefono: clienteData.telefono,
+        celular: clienteData.celular,
+        ciRuc: clienteData.ruc,
+        sexo: clienteData.sexo || '',
+        provincia: clienteData.provincia || 'Pichincha',
+        ciudad: clienteData.ciudad || 'Quito',
+      });
+      return;
+    }
+
+    setOpenDialog(true);
+  }
+};
+
   return (
     <Box sx={{ p: 3 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
@@ -951,7 +964,7 @@ const imprimirCupones = () => {
       </Box>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
-          <TextField fullWidth label="R.U.C." variant="outlined" onChange={handleRucChange} size='small' />
+          <TextField fullWidth label="R.U.C." variant="outlined" onChange={handleRucChange} onKeyDown={handleRucKeyDown} size='small' />
         </Grid>
         <NewClientDialog openDialog={openDialog} setOpenDialog={setOpenDialog} cliente={cliente} setCliente={setCliente} />
 
