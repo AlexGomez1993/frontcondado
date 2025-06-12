@@ -222,6 +222,11 @@ export default function FacturaForm() {
     const campania = campanias.find(c => c.id == row.campania_id);
     const promocion = campania?.promociones?.find(p => p.id == promocionId);
 
+    if (promocion?.nombre && promocion.nombre.toLowerCase().includes("megamaxi")) {
+      setLocal('315');
+    }else{
+      setLocal('0');
+    }
     const newRows = [...selectedRows];
     newRows[index] = {
       ...row,
