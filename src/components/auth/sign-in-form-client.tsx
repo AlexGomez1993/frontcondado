@@ -30,7 +30,7 @@ import { useUser } from '@/hooks/use-user';
 import { NewClientForm } from './new-client.form';
 
 const schema = zod.object({
-  ruc: zod.string().min(10, { message: 'Campo requerido' }),
+  ruc: zod.string().min(6, { message: 'Campo requerido' }),
   password: zod.string().min(1, { message: 'Campo requerido' }),
 });
 
