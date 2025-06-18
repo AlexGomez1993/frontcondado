@@ -108,7 +108,7 @@ const FacturasTable = () => {
   const [indiceCampania, setIndiceCampania] = useState(0);
   const [openCuponDialog, setOpenCuponDialog] = useState(false);
   const [estadoImpresion, setEstadoImpresion] = useState<'listo' | 'imprimiendo' | 'transicion' | 'finalizado'>('listo');
-  const [cuentaRegresiva, setCuentaRegresiva] = useState(5);
+  const [cuentaRegresiva, setCuentaRegresiva] = useState(2);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -346,7 +346,7 @@ const FacturasTable = () => {
       if (i > end) {
         // Fin de campaña actual
         setEstadoImpresion('transicion');
-        setCuentaRegresiva(5);
+        setCuentaRegresiva(2);
 
         const countdown = setInterval(() => {
           setCuentaRegresiva((prev) => {

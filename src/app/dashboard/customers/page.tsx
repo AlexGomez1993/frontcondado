@@ -572,7 +572,7 @@ export default function FacturaForm() {
       if (i > end) {
         // Fin de campaña actual
         setEstadoImpresion('transicion');
-        setCuentaRegresiva(5);
+        setCuentaRegresiva(2);
 
         const countdown = setInterval(() => {
           setCuentaRegresiva((prev) => {
