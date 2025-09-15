@@ -669,10 +669,15 @@ const imprimirCupones = () => {
     const campaniaSelect = campanias.find((c) => c.nombre === campaniaActual.campania);
     const logo = campaniaSelect?.logo;
 
-    const isCampaniaMujer2025 = campaniaActual.campania === 'SHOPPING DOLLAR 2025';
+    //const isCampaniaMujer2025 = campaniaActual.campania === 'SHOPPING DOLLAR 2025';
+    const nombreCampania = campaniaActual.campania.toUpperCase();
+    const isShoppingDollar = nombreCampania.includes('SHOPPING DOLLAR');
+    const isRac = nombreCampania.includes('RAC');
+    const esCampaniaEspecial = isShoppingDollar || isRac;
+
 
     // ✅ Condición de corte para campañas normales
-    if (!isCampaniaMujer2025 && i > end) {
+    if (!esCampaniaEspecial && i > end) {
       setEstadoImpresion('transicion');
       setCuentaRegresiva(2);
 
@@ -694,9 +699,12 @@ const imprimirCupones = () => {
     }
 
     // 🎯 Campaña especial: imprime solo un cupón
-    if (isCampaniaMujer2025) {
+    if (esCampaniaEspecial) {
       const win = window.open('');
       if (!win) return;
+      const tituloEntrega = isShoppingDollar
+        ? 'SHOPPING DOLLARS A ENTREGAR'
+        : 'STICKERS A ENTREGAR';
 
       win.document.write(`<!DOCTYPE html>
         <html>
@@ -731,7 +739,7 @@ const imprimirCupones = () => {
               <tr><td><strong>DIRECCIÓN:</strong></td><td>${cliente?.direccion}</td></tr>
               <tr><td><strong>CAMPAÑA:</strong></td><td>${campaniaActual.campania}</td></tr>
               <tr><td colspan="2" class="shopping-dollars">
-                SHOPPING DOLLARS A ENTREGAR: ${totalCupones}
+                ${tituloEntrega}: ${totalCupones}
               </td></tr>
               <tr>
                 <td colspan="2">
